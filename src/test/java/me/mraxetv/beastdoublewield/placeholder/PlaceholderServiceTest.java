@@ -58,6 +58,7 @@ class PlaceholderServiceTest {
     private final ItemStack[] topContents = new ItemStack[5];
     private final AtomicReference<ItemStack> cursor = new AtomicReference<>();
     private final Set<ItemStack> owned = Collections.newSetFromMap(new IdentityHashMap<ItemStack, Boolean>());
+    private final Set<ItemStack> arms = Collections.newSetFromMap(new IdentityHashMap<ItemStack, Boolean>());
     private final List<Runnable> deferred = new ArrayList<>();
     private MockedStatic<PlaceholderItem> items;
 
@@ -65,6 +66,7 @@ class PlaceholderServiceTest {
         items = mockStatic(PlaceholderItem.class);
         items.when(PlaceholderItem::supported).thenReturn(true);
         items.when(() -> PlaceholderItem.isOwned(any())).thenAnswer(call -> owned.contains(call.getArgument(0)));
+        items.when(() -> PlaceholderItem.isArm(any())).thenAnswer(call -> arms.contains(call.getArgument(0)));
         items.when(PlaceholderItem::create).thenAnswer(call -> ownedItem());
         plugin = mock(BeastDoubleWieldPlugin.class);
         player = mock(Player.class);
@@ -129,6 +131,81 @@ class PlaceholderServiceTest {
         ItemStack item = new ItemStack(Material.FEATHER, 1);
         owned.add(item);
         return item;
+    }
+
+    private ItemStack ownedArm() {
+        ItemStack item = new ItemStack(Material.FEATHER);
+        owned.add(item); arms.add(item); return item;
+    }
+
+    private void enableArms() {
+        config.set("placeholder.first-person-arm", true);
+        when(plugin.getServer().getBukkitVersion()).thenReturn("26.3-R0.1-SNAPSHOT");
+        items.when(() -> PlaceholderItem.armSupported("26.3-R0.1-SNAPSHOT")).thenReturn(true);
+        items.when(() -> PlaceholderItem.createArm(player)).thenAnswer(call -> ownedArm());
+        service.reload();
+    }
+
+    @Test void armUsesOnlyEmptyOffhandAndLeavesMainHandActuallyEmpty() {
+        enableArms();
+        service.reconcile(player);
+        ItemStack arm = contents[40];
+        assertTrue(arms.contains(arm)); assertNull(contents[2]);
+        service.reconcile(player); assertSame(arm, contents[40]);
+        ItemStack sword = new ItemStack(Material.DIAMOND_SWORD);
+        contents[40] = sword;
+        service.reconcile(player);
+        assertSame(sword, contents[40]); assertTrue(owned.contains(contents[2]));
+        contents[2] = sword; contents[40] = null;
+        service.reconcile(player);
+        assertSame(sword, contents[2]); assertTrue(arms.contains(contents[40]));
+    }
+
+    @Test void unsupportedOrUnresolvedArmKeepsExistingInputFallback() {
+        config.set("placeholder.first-person-arm", true);
+        service.reload(); service.reconcile(player);
+        assertNull(contents[40]); assertTrue(owned.contains(contents[2]));
+        assertTrue(service.describe().contains("unavailable"));
+        enableArms();
+        items.when(() -> PlaceholderItem.createArm(player)).thenReturn(null);
+        service.reconcile(player); service.reconcile(player);
+        assertNull(contents[40]); assertTrue(owned.contains(contents[2]));
+        items.verify(() -> PlaceholderItem.createArm(player), times(1));
+    }
+
+    @Test void armHonorsAirWhitelistEmptyHandPermissionAndCleanup() {
+        enableArms(); service.reconcile(player);
+        ItemStack arm = contents[40];
+        config.set("attack.materials.mode", "WHITELIST");
+        config.set("attack.materials.patterns", Collections.singletonList("AIR"));
+        // Use a fresh section because configured filters are immutable until reload validation.
+        YamlConfiguration rules = new YamlConfiguration();
+        rules.set("allow-empty-hand", true); rules.set("game-modes", Collections.singletonList("SURVIVAL"));
+        rules.set("materials.mode", "WHITELIST"); rules.set("materials.patterns", Collections.singletonList("AIR"));
+        assertTrue(ItemRules.canUse(player, arm, rules));
+        assertFalse(ItemRules.isWeapon(arm));
+        rules.set("allow-empty-hand", false); assertFalse(ItemRules.canUse(player, arm, rules));
+        config.set("attack.allow-empty-hand", false);
+        service.reconcile(player); assertNull(contents[40]);
+        config.set("attack.allow-empty-hand", true); service.reconcile(player);
+        service.close(); assertNull(contents[40]); assertNull(contents[2]);
+    }
+
+    @Test void armCannotPlaceEquipOrDispenseButBlockUseRemainsAvailable() {
+        enableArms(); service.reconcile(player);
+        ItemStack arm = contents[40];
+        org.bukkit.event.player.PlayerInteractEvent use = mock(org.bukkit.event.player.PlayerInteractEvent.class);
+        when(use.getAction()).thenReturn(org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK);
+        when(use.getItem()).thenReturn(arm);
+        service.use(use);
+        verify(use).setUseItemInHand(org.bukkit.event.Event.Result.DENY);
+        verify(use, never()).setUseInteractedBlock(any());
+        when(use.getAction()).thenReturn(org.bukkit.event.block.Action.RIGHT_CLICK_AIR);
+        service.use(use); verify(use, times(2)).setUseItemInHand(org.bukkit.event.Event.Result.DENY);
+        org.bukkit.event.block.BlockPlaceEvent place = mock(org.bukkit.event.block.BlockPlaceEvent.class);
+        when(place.getItemInHand()).thenReturn(arm); service.place(place); verify(place).setCancelled(true);
+        org.bukkit.event.block.BlockDispenseEvent dispense = mock(org.bukkit.event.block.BlockDispenseEvent.class);
+        when(dispense.getItem()).thenReturn(arm); service.dispense(dispense); verify(dispense).setCancelled(true);
     }
 
     private void flush() {

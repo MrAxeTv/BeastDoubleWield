@@ -92,4 +92,19 @@ class HandAccessTest {
         assertNull(main.get());
         assertSame(originalOff, off.get());
     }
+
+    @Test void visualArmBecomesRealAirForNativeActionAndReturnsAfterward() {
+        try (org.mockito.MockedStatic<me.mraxetv.beastdoublewield.placeholder.PlaceholderItem> items =
+                     mockStatic(me.mraxetv.beastdoublewield.placeholder.PlaceholderItem.class)) {
+            items.when(() -> me.mraxetv.beastdoublewield.placeholder.PlaceholderItem.isArm(originalOff)).thenReturn(true);
+            HandAccess.withOffhand(player, () -> {
+                assertEquals(org.bukkit.Material.AIR, main.get().getType());
+                assertSame(originalMain, off.get()); return null;
+            });
+            assertSame(originalOff, off.get()); assertSame(originalMain, main.get());
+            ItemStack granted = new ItemStack(org.bukkit.Material.DIAMOND);
+            HandAccess.withOffhand(player, () -> { main.set(granted); return null; });
+            assertSame(granted, off.get()); assertSame(originalMain, main.get());
+        }
+    }
 }

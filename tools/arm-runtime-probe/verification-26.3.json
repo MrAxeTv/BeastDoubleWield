@@ -1,0 +1,20 @@
+{
+    "Server":  "Paper 26.3-188-main@06b855f",
+    "Java":  "26.0.1",
+    "BeastLib":  "1.7.0",
+    "Passed":  18,
+    "Failed":  0,
+    "NativeDamageEvents":  3,
+    "EmptyHandDamageEvents":  2,
+    "CancelledDamageEvents":  1,
+    "CancellationCheck":  "Fresh target, one native AIR-hand event, one MONITOR-observed cancellation, unchanged health",
+    "NetworkClient":  false,
+    "SyntheticNativePlayer":  true,
+    "JarSHA256":  "338C71D1E0A6927AB7857929C629848A6C1328E3F2F6B1C867E6FA37F8ADFEE5",
+    "Stopped":  true,
+    "LoopbackPort":  25592,
+    "ListeningAfterShutdown":  false,
+    "Log":  "final-native.log",
+    "Stderr":  "cancellation-stderr.log",
+    "ProbeSourceSHA256":  "590797F08F8FE09959B2C192744D5A45D9DCAB9FF3509EA389D26D82F63A4D7C"
+}

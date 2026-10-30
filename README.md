@@ -42,6 +42,16 @@ It respects attack permissions, personal/global switches, world and attack rules
 
 The placeholder cannot be given to vanilla item frames, armor stands, or allays. Normal trading and mounting remain available. Plugins that directly copy, transform, or transfer held items need their own compatibility checks; arbitrary custom transfer logic is not certified by these guards.
 
+## Experimental first-person skin arm (1.1 development)
+
+The optional `placeholder.first-person-arm: true` setting adds a skin-textured fist when the offhand is empty. It also requires `placeholder.enabled`, `swing.air`, and `attack.allow-empty-hand`, with `attack.correct-tool-only: false`. This feature requires Paper 26.3's public component APIs, a native 26.3 Java client and the separate [first-person arm pack](examples/firstperson-arm/README.md). It is disabled by default. The published 1.0 release does not contain it.
+
+The protected carrier uses the player's already available complete skin profile, with separate classic/slim models. A shared shader pack samples that profile's native skin texture; the plugin does not download or bake a skin PNG for each player. The item renders only in first person, while the normal player entity and its swing remain in use in third person. When the arm carrier is present, the main hand stays empty so its ordinary arm can render normally. Combat and filtering treat the owned carrier as AIR, and native actions receive an actual empty acting hand.
+
+Install the matching pack manually before enabling this setting. Missing profiles and unsupported versions retain the ordinary input placeholder behavior. Known Bedrock clients and detected ViaVersion clients using another protocol do not receive the arm. Proxy-only translation cannot always be detected: server owners must restrict this feature to matching clients. Without the pack, the carrier can appear as a head. A real offhand item always takes priority. Skin changes refresh when the carrier is recreated, such as after toggling or reconnecting. The normal third-person swing stays in use, though holding an invisible item can still affect the native resting arm pose.
+
+The standalone pack overrides Minecraft's entity shaders. It cannot be stacked with the current BeastRPGInventory 26.2 shader pack; that pack needs a separately verified 26.3 port and merge. Other shader packs and client rendering mods also require compatibility checks. Native shader/model fixtures and an isolated server API probe are described in [the development verification record](docs/first-person-arm.md); those checks do not establish a full live multiplayer visual result.
+
 ## Commands and permissions
 
 The primary command is `/beastdoublewield`; `/bdw` and `/doublewield` are aliases.
@@ -101,6 +111,6 @@ A normal `mvn package` or `mvn install` also exports this plugin JAR to seven ow
 
 ## Runtime verification
 
-Automated tests cover action eligibility, cancellation, inventory restoration, attribute substitution, mining sessions, commands, configuration failures, optional integrations, service lifecycle, response limits, and update/metrics data handling. See [the feature matrix](docs/feature-matrix.md) and [verification record](docs/verification.md) for the current test totals, artifact checksums, legacy linkage checks, and live-server evidence.
+Automated tests cover action eligibility, cancellation, inventory restoration, attribute substitution, mining sessions, commands, configuration failures, optional integrations, service lifecycle, response limits, and update/metrics data handling. See [the feature matrix](docs/feature-matrix.md), the [1.0 verification record](docs/verification.md), and the [1.1 arm development record](docs/first-person-arm.md) for test totals, artifact checksums, legacy linkage checks, and native-server evidence for each version.
 
 Before deployment, exercise attacks against mobs and players, cancelled PvP damage, enchanted weapons, weapon breakage, protected mining, Silk Touch/Fortune, slow/instant mining, both hand changes, item-use interactions, disconnects, and configuration reloads on the intended server version. Automated tests do not replace these native-server integration checks.

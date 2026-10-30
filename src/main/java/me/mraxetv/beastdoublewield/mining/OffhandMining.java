@@ -1,5 +1,6 @@
 package me.mraxetv.beastdoublewield.mining;
 import me.mraxetv.beastdoublewield.compat.ServerAccess;
+import me.mraxetv.beastdoublewield.placeholder.PlaceholderItem;
 
 import me.mraxetv.beastdoublewield.BeastDoubleWieldPlugin;
 import me.mraxetv.beastdoublewield.api.OffhandBlockBreakEvent;
@@ -62,7 +63,7 @@ public final class OffhandMining implements Listener, AutoCloseable {
         sessions.put(id, session);
         try {
             BlockDamageEvent damage = HandAccess.withOffhand(player, () -> {
-                BlockDamageEvent intent = new BlockDamageEvent(player, block, session.tool.clone(), false);
+                BlockDamageEvent intent = new BlockDamageEvent(player, block, PlaceholderItem.logicalItem(session.tool.clone()), false);
                 plugin.getServer().getPluginManager().callEvent(intent);
                 return intent;
             });
@@ -137,7 +138,7 @@ public final class OffhandMining implements Listener, AutoCloseable {
         // Remove first: a listener may re-enter this service or reload the plugin.
         finish(session, true);
         OffhandBlockBreakEvent event = new OffhandBlockBreakEvent(session.player,
-                session.block, session.tool.clone());
+                session.block, PlaceholderItem.logicalItem(session.tool.clone()));
         plugin.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled() || session.generation != generation || sessions.containsKey(session.playerId)
                 || !unchanged(session) || !eligible(session.player, session.block)) return;
@@ -157,7 +158,7 @@ public final class OffhandMining implements Listener, AutoCloseable {
                 || block.isEmpty() || block.isLiquid()) return false;
         ItemStack tool = player.getInventory().getItemInOffHand();
         if (!ItemRules.canUse(player, tool, rules)
-                || (rules.getBoolean("correct-tool-only", false) && !ServerAccess.preferredTool(block, tool))) return false;
+                || (rules.getBoolean("correct-tool-only", false) && !ServerAccess.preferredTool(block, PlaceholderItem.logicalItem(tool)))) return false;
         double reach = Math.max(1.0, Math.min(6.0, rules.getDouble("reach", 4.5)));
         if (!Double.isFinite(reach)) return false;
         Block hit = ServerAccess.targetBlock(player, reach);

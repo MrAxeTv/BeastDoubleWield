@@ -1,0 +1,41 @@
+{
+    "textures":  {
+                     "particle":  "minecraft:block/soul_sand"
+                 },
+    "display":  {
+                    "firstperson_lefthand":  {
+                                                 "translation":  [
+                                                                     0,
+                                                                     4,
+                                                                     0
+                                                                 ],
+                                                 "rotation":  [
+                                                                  0,
+                                                                  0,
+                                                                  0
+                                                              ],
+                                                 "scale":  [
+                                                               1,
+                                                               1,
+                                                               1
+                                                           ]
+                                             },
+                    "firstperson_righthand":  {
+                                                  "translation":  [
+                                                                      0,
+                                                                      4,
+                                                                      0
+                                                                  ],
+                                                  "rotation":  [
+                                                                   0,
+                                                                   0,
+                                                                   0
+                                                               ],
+                                                  "scale":  [
+                                                                1,
+                                                                1,
+                                                                1
+                                                            ]
+                                              }
+                }
+}

@@ -1,5 +1,6 @@
 package me.mraxetv.beastdoublewield.combat;
 import me.mraxetv.beastdoublewield.compat.ServerAccess;
+import me.mraxetv.beastdoublewield.placeholder.PlaceholderItem;
 
 import me.mraxetv.beastdoublewield.BeastDoubleWieldPlugin;
 import me.mraxetv.beastdoublewield.api.OffhandAttackEvent;
@@ -36,14 +37,15 @@ public final class OffhandCombat {
         ItemStack weapon = player.getInventory().getItemInOffHand().clone();
         ItemStack main = player.getInventory().getItemInMainHand().clone();
         int slot = player.getInventory().getHeldItemSlot();
-        OffhandAttackEvent intent = new OffhandAttackEvent(player, target, weapon);
+        ItemStack acting = PlaceholderItem.logicalItem(weapon);
+        OffhandAttackEvent intent = new OffhandAttackEvent(player, target, acting);
         plugin.getServer().getPluginManager().callEvent(intent);
         if (intent.isCancelled() || started != generation) return true;
         // Listeners may teleport, remove the victim, or replace items. Never act on stale intent.
         if (!eligible(player, target) || player.getInventory().getHeldItemSlot() != slot
                 || !weapon.equals(player.getInventory().getItemInOffHand())
                 || !main.equals(player.getInventory().getItemInMainHand())) return true;
-        WeaponAttributes.withOffhand(player, main, weapon, () -> {
+        WeaponAttributes.withOffhand(player, main, acting, () -> {
             AttributeInstance speed = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
             double rate = plugin.getConfig().getBoolean("attack.cooldown", true) && speed != null ? speed.getValue() : 20;
             limiter.record(player.getUniqueId(), player.getTicksLived(), rate);

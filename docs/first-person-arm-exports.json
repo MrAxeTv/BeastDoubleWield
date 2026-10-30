@@ -1,0 +1,37 @@
+[
+    {
+        "Path":  "F:\\McServers\\Console\\servers\\Paper_1.8\\plugins\\BeastDoubleWield.jar",
+        "SHA256":  "338C71D1E0A6927AB7857929C629848A6C1328E3F2F6B1C867E6FA37F8ADFEE5",
+        "Match":  true
+    },
+    {
+        "Path":  "F:\\McServers\\Console\\servers\\latests\\plugins\\BeastDoubleWield.jar",
+        "SHA256":  "338C71D1E0A6927AB7857929C629848A6C1328E3F2F6B1C867E6FA37F8ADFEE5",
+        "Match":  true
+    },
+    {
+        "Path":  "F:\\McServers\\Console\\servers\\BC 1\\plugins\\BeastDoubleWield.jar",
+        "SHA256":  "338C71D1E0A6927AB7857929C629848A6C1328E3F2F6B1C867E6FA37F8ADFEE5",
+        "Match":  true
+    },
+    {
+        "Path":  "F:\\McServers\\Console\\servers\\BC 2\\plugins\\BeastDoubleWield.jar",
+        "SHA256":  "338C71D1E0A6927AB7857929C629848A6C1328E3F2F6B1C867E6FA37F8ADFEE5",
+        "Match":  true
+    },
+    {
+        "Path":  "F:\\McServers\\Bungee\\Valocity\\s1\\plugins\\BeastDoubleWield.jar",
+        "SHA256":  "338C71D1E0A6927AB7857929C629848A6C1328E3F2F6B1C867E6FA37F8ADFEE5",
+        "Match":  true
+    },
+    {
+        "Path":  "F:\\McServers\\Bungee\\Valocity\\s2\\plugins\\BeastDoubleWield.jar",
+        "SHA256":  "338C71D1E0A6927AB7857929C629848A6C1328E3F2F6B1C867E6FA37F8ADFEE5",
+        "Match":  true
+    },
+    {
+        "Path":  "F:\\McServers\\production\\BeastDoubleWield\\BeastDoubleWield-1.1-SNAPSHOT.jar",
+        "SHA256":  "338C71D1E0A6927AB7857929C629848A6C1328E3F2F6B1C867E6FA37F8ADFEE5",
+        "Match":  true
+    }
+]

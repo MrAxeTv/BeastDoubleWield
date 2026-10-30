@@ -43,6 +43,15 @@ swing:
 # Without that pack this item looks like a feather. Packs are never applied automatically.
 # This enables item-use input; it does NOT draw an empty offhand fist in first person.
 placeholder:
+  # Experimental skin arm: requires the separate 26.3 first-person-arm shader pack.
+  # Draws an owned offhand carrier using your existing complete skin profile.
+  # Only an empty offhand is eligible; combat treats the carrier as an empty fist.
+  # Keep attack.correct-tool-only=false and allow AIR in any attack whitelist.
+  # Requires Paper 26.3 public component APIs and a native 26.3 Java client.
+  # Other versions retain the ordinary placeholder; detected older Via clients skip it.
+  # Install the matching pack manually before enabling; no pack is sent automatically.
+  # Core shader packs (including the current RPG 26.2 pack) require a verified merge.
+  first-person-arm: false
   # Also requires swing.air=true and attack.allow-empty-hand=true above/below.
   # Respects attack.enabled, permissions, personal toggle, worlds and attack item rules.
   # Survival/Adventure only; pauses for inventory use, real main-hand items and a full

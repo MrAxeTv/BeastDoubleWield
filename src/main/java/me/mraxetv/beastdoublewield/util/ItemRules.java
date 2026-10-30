@@ -19,7 +19,8 @@ public final class ItemRules {
     private ItemRules() { }
 
     public static boolean canUse(Player player, ItemStack item, ConfigurationSection rules) {
-        if (PlaceholderItem.isOwned(item)) return false;
+        if (PlaceholderItem.isArm(item)) item = new ItemStack(Material.AIR);
+        else if (PlaceholderItem.isOwned(item)) return false;
         if (rules == null || !rules.getBoolean("enabled", true)) return false;
         if (!rules.getBoolean(player.isSneaking() ? "sneaking" : "standing", true)) return false;
         if (!rules.getStringList("game-modes").contains(player.getGameMode().name())) return false;
@@ -36,6 +37,7 @@ public final class ItemRules {
     }
 
     public static boolean isWeapon(ItemStack item) {
+        if (PlaceholderItem.isArm(item)) return false;
         if (item == null) return false;
         String name = item.getType().name();
         return name.endsWith("_SWORD") || name.endsWith("_AXE") || name.endsWith("_PICKAXE")

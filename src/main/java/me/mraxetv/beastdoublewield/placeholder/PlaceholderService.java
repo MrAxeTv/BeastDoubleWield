@@ -13,6 +13,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Event;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemSpawnEvent;
@@ -27,24 +31,31 @@ import org.bukkit.inventory.PlayerInventory;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 /** Maintains an optional disposable main-hand carrier without replacing genuine items. */
 public final class PlaceholderService implements Listener, AutoCloseable {
     private final BeastDoubleWieldPlugin plugin;
+    private final ArmClientSupport armClients;
     private final Set<UUID> inventoryOpen = new HashSet<>();
     private final Set<UUID> cleanupPending = new HashSet<>();
+    private final Map<UUID, Integer> nextProfileAttempt = new HashMap<>();
     private SchedulerTask timer;
     private boolean enabled;
+    private boolean armEnabled;
     private boolean closed;
     private long generation;
     private String state = "not started";
 
-    public PlaceholderService(BeastDoubleWieldPlugin plugin) { this.plugin = plugin; }
+    public PlaceholderService(BeastDoubleWieldPlugin plugin) { this.plugin = plugin; this.armClients = new ArmClientSupport(plugin); }
 
     public static void validate(ConfigurationSection config) {
         if (config.contains("placeholder.enabled") && !(config.get("placeholder.enabled") instanceof Boolean))
             throw new IllegalArgumentException("placeholder.enabled must be true or false");
+        if (config.contains("placeholder.first-person-arm") && !(config.get("placeholder.first-person-arm") instanceof Boolean))
+            throw new IllegalArgumentException("placeholder.first-person-arm must be true or false");
     }
 
     /** Reconfiguration is optional and must not invalidate otherwise valid gameplay settings. */
@@ -52,6 +63,8 @@ public final class PlaceholderService implements Listener, AutoCloseable {
         if (closed) return;
         generation++;
         enabled = false;
+        armEnabled = false;
+        nextProfileAttempt.clear();
         stopTimer();
         for (Player player : plugin.getServer().getOnlinePlayers()) cleanup(player);
         cleanupPending.clear();
@@ -70,6 +83,12 @@ public final class PlaceholderService implements Listener, AutoCloseable {
             timer = next;
             enabled = true;
             state = "enabled (resource pack required)";
+            if (plugin.getConfig().getBoolean("placeholder.first-person-arm", false)) {
+                armEnabled = PlaceholderItem.armSupported(plugin.getServer().getBukkitVersion());
+                state += armEnabled ? ", first-person arm enabled (26.3 shader pack required)"
+                        : ", first-person arm unavailable (requires Paper 26.3/component API)";
+                if (!armEnabled) plugin.getLogger().warning("First-person arms require the verified Paper 26.3 shader/component API path; retaining the invisible input placeholder.");
+            }
             plugin.getLogger().info("Invisible input placeholder enabled. Install the matching optional pack manually; otherwise its feather is visible.");
         } catch (RuntimeException failure) {
             state = "unavailable";
@@ -97,14 +116,30 @@ public final class PlaceholderService implements Listener, AutoCloseable {
         PlayerInventory inventory = player.getInventory();
         int selected = inventory.getHeldItemSlot();
         boolean eligible = eligible(player) && spareStorageSlot(inventory, selected);
+        boolean keepArm = eligible && armEnabled && armClients.allowed(player);
         for (int slot = 0; slot < inventory.getSize(); slot++) {
             ItemStack item = inventory.getItem(slot);
-            if (PlaceholderItem.isOwned(item) && (!eligible || slot != selected || item.getAmount() != 1))
+            boolean validSlot = PlaceholderItem.isArm(item) ? keepArm && slot == 40 : eligible && slot == selected;
+            if (PlaceholderItem.isOwned(item) && (!validSlot || item.getAmount() != 1))
                 inventory.setItem(slot, null);
         }
         if (PlaceholderItem.isOwned(player.getItemOnCursor())) player.setItemOnCursor(null);
-        if (eligible && empty(player.getItemOnCursor()) && empty(inventory.getItem(selected)))
+        if (keepArm && empty(player.getItemOnCursor()) && empty(inventory.getItemInOffHand())) {
+            int now = player.getTicksLived();
+            Integer next = nextProfileAttempt.get(player.getUniqueId());
+            if (next == null || now >= next) {
+                ItemStack arm = PlaceholderItem.createArm(player);
+                if (arm != null) { inventory.setItemInOffHand(arm); nextProfileAttempt.remove(player.getUniqueId()); }
+                else nextProfileAttempt.put(player.getUniqueId(), now + 100);
+            }
+        }
+        // The offhand carrier already generates air-use input. Keep the actual main hand
+        // empty so vanilla continues to draw its normal first-person arm.
+        if (PlaceholderItem.isArm(inventory.getItemInOffHand())) {
+            if (PlaceholderItem.isOwned(inventory.getItem(selected))) inventory.setItem(selected, null);
+        } else if (eligible && empty(player.getItemOnCursor()) && empty(inventory.getItem(selected))) {
             inventory.setItem(selected, PlaceholderItem.create());
+        }
     }
 
     private boolean eligible(Player player) {
@@ -230,6 +265,24 @@ public final class PlaceholderService implements Listener, AutoCloseable {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void entityAt(PlayerInteractAtEntityEvent event) { protectEntityInteraction(event); }
 
+    // Input listeners run first. Denying just the owned item's use preserves chest/door
+    // interactions while preventing skull placement and right-click helmet equipping.
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void use(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (PlaceholderItem.isArm(event.getItem())) event.setUseItemInHand(Event.Result.DENY);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void place(BlockPlaceEvent event) {
+        if (PlaceholderItem.isOwned(event.getItemInHand())) event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void dispense(BlockDispenseEvent event) {
+        if (PlaceholderItem.isOwned(event.getItem())) event.setCancelled(true);
+    }
+
     private void protectEntityInteraction(PlayerInteractEntityEvent event) {
         Entity target = event.getRightClicked();
         if (!(target instanceof ItemFrame || target instanceof ArmorStand)
@@ -297,6 +350,7 @@ public final class PlaceholderService implements Listener, AutoCloseable {
         cleanup(event.getPlayer());
         inventoryOpen.remove(event.getPlayer().getUniqueId());
         cleanupPending.remove(event.getPlayer().getUniqueId());
+        nextProfileAttempt.remove(event.getPlayer().getUniqueId());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -318,6 +372,7 @@ public final class PlaceholderService implements Listener, AutoCloseable {
         stopTimer();
         for (Player player : plugin.getServer().getOnlinePlayers()) cleanup(player);
         inventoryOpen.clear(); cleanupPending.clear();
+        nextProfileAttempt.clear();
     }
 
     private void stopTimer() {

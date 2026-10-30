@@ -1,0 +1,5 @@
+name: BeastDoubleWieldArmProbe
+version: '1'
+main: probe.ArmRuntimeProbe
+api-version: '1.20'
+depend: [BeastDoubleWield]

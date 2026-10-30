@@ -1,5 +1,8 @@
 package me.mraxetv.beastdoublewield.util;
 
+import me.mraxetv.beastdoublewield.placeholder.PlaceholderItem;
+import me.mraxetv.beastdoublewield.compat.ServerAccess;
+
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -34,6 +37,7 @@ public final class HandAccess {
         PlayerInventory inventory = null;
         int slot = -1;
         ItemStack main = null;
+        ItemStack arm = null;
         boolean mainWritten = false;
         boolean swapped = false;
         T result = null;
@@ -43,7 +47,8 @@ public final class HandAccess {
             slot = inventory.getHeldItemSlot();
             main = inventory.getItem(slot);
             ItemStack off = inventory.getItemInOffHand();
-            inventory.setItem(slot, off);
+            if (PlaceholderItem.isArm(off)) arm = off;
+            inventory.setItem(slot, arm == null ? off : new ItemStack(org.bukkit.Material.AIR));
             mainWritten = true;
             inventory.setItemInOffHand(main);
             swapped = true;
@@ -57,6 +62,7 @@ public final class HandAccess {
                     // and other listeners' changes belong to the hand performing the action.
                     ItemStack used = inventory.getItem(slot);
                     ItemStack other = inventory.getItemInOffHand();
+                    if (arm != null && (used == null || used.getAmount() < 1 || ServerAccess.air(used.getType()))) used = arm;
                     inventory.setItem(slot, other);
                     inventory.setItemInOffHand(used);
                 } else if (mainWritten) {
