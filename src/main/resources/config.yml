@@ -1,0 +1,107 @@
+# BeastDoubleWield: right-click with your offhand item to attack or hold to mine.
+# Every range is in blocks. Keep reach appropriate for your server's rules.
+# After editing, use /bdw reload. Invalid settings keep the previous active config.
+# A changed plugin JAR needs a server restart; /bdw reload loads settings only.
+# Master gameplay switch. Players can also disable their own actions with /bdw toggle.
+enabled: true
+# Exact world names, for example: [lobby, creative]. Empty list allows every world.
+disabled-worlds: []
+# An owner-hosted HTTPS YAML manifest containing version and download-url.
+# No automatic downloading or installing plugin updates.
+updates:
+  # Display release notices; never download or install a JAR automatically.
+  enabled: true
+  # HTTPS YAML with version and download-url. Set '' to turn off feed requests.
+  manifest-url: 'https://raw.githubusercontent.com/MrAxeTv/BeastDoubleWield/main/update.yml'
+  # Whole minutes, 5-10080. Failed requests retry with backoff.
+  interval-minutes: 360
+  # Notify players with beastdoublewield.update when an update is available.
+  notify-admins: true
+# bStats uses plugin ID 35021 and plugins/bStats/config.yml for its opt-out.
+# The separate custom metrics block below does NOT control bStats.
+# Optional custom aggregate metrics. No player identities are included in this payload.
+metrics:
+  # Leave false to use only bStats; this is an additional custom JSON service.
+  enabled: false
+  # Your own HTTPS receiver, not a bStats dashboard URL. Blank sends nothing.
+  endpoint: ''
+  # Whole minutes, 5-1440. Does not change bStats' official submission schedule.
+  interval-minutes: 30
+interaction:
+  # Preserve mounting, trading and listed animal interactions; sneak to attack instead.
+  preserve-entity-use: true
+  # Preserve chests, doors, buttons and similar block use; sneak to mine instead.
+  preserve-block-use: true
+  # Do not intercept eating, drinking, bows, shields, or other main-hand use.
+  preserve-main-hand-use: true
+swing:
+  # Animate the offhand on a right-click in air when the client sends input.
+  # With BOTH hands empty, vanilla sends no air-use packet to the server.
+  air: false
+# Optional invisible item in an otherwise empty MAIN-HAND slot (Minecraft 1.14+).
+# Install the matching client pack from examples/resourcepack or the GitHub release.
+# Without that pack this item looks like a feather. Packs are never applied automatically.
+# This enables item-use input; it does NOT draw an empty offhand fist in first person.
+placeholder:
+  # Also requires swing.air=true and attack.allow-empty-hand=true above/below.
+  # Respects attack.enabled, permissions, personal toggle, worlds and attack item rules.
+  # Survival/Adventure only; pauses for inventory use, real main-hand items and a full
+  # inventory. Keep at least one other storage slot free for normal item pickups.
+  # Carrier: FEATHER, CustomModelData 35021, blank visible name and no lore.
+  # A private ownership tag remains for safe cleanup; advanced tooltips can reveal data.
+  # Never assign the plugin's private ownership tag to your own real items.
+  enabled: false
+attack:
+  # Independent action switch, also requiring beastdoublewield.attack permission.
+  enabled: true
+  # Eye-to-target reach, 0.5-6.0 blocks. Does not bypass walls or protection plugins.
+  reach: 3.0
+  # Permit attacking with an empty OFFHAND. Normal main-hand punches are unaffected.
+  allow-empty-hand: false
+  # Allow this action while not sneaking / while sneaking, respectively.
+  standing: true
+  sneaking: true
+  # Bukkit game-mode names. SPECTATOR is normally unsuitable for combat.
+  game-modes: [SURVIVAL, CREATIVE, ADVENTURE]
+  # Restrict to weapon/tool families or positive custom attack-damage modifiers.
+  correct-tool-only: false
+  # Consume the right-click only when an offhand action claims it.
+  # False also permits the normal interaction, which can cause conflicting actions.
+  cancel-interaction: true
+  # Protect entities tagged as NPCs, including the standard Citizens NPC marker.
+  protect-npcs: true
+  # An additional offhand rate limit. Native server cooldown remains in force.
+  cooldown: true
+  materials:
+    # BLACKLIST rejects matching item types; WHITELIST allows matching types only.
+    mode: BLACKLIST
+    # Case-sensitive full Java regex matches against Bukkit material names.
+    # For example '.*_SWORD' matches swords. Include 'AIR' for empty-hand whitelists.
+    patterns: ['LEAD', 'SHIELD', 'SHEARS', 'EGG', 'SNOWBALL', 'ENDER_PEARL', '.*SPAWN_EGG', '.*BUCKET', '.*POTION', '.*MAP', '.*BOW', '.*SEEDS']
+mine:
+  # Independent action switch, also requiring beastdoublewield.mine permission.
+  enabled: true
+  # Block targeting reach, 0.5-6.0 blocks, with line-of-sight checks.
+  reach: 4.5
+  # Right-click repeats while held. Stop if no further input reaches the server.
+  # Whole ticks, 2-40; 20 ticks is about one second. Lower can interrupt laggy input;
+  # higher can finish a block shortly after release because release sends no stop event.
+  input-timeout-ticks: 8
+  # Permit mining with an empty OFFHAND, independently of the attack setting.
+  allow-empty-hand: false
+  # Separate from the attack stance settings above.
+  standing: true
+  sneaking: true
+  # Add CREATIVE/ADVENTURE only deliberately; native server restrictions still apply.
+  game-modes: [SURVIVAL]
+  # Require a tool the server considers appropriate for the targeted block.
+  correct-tool-only: false
+  # Consume the right-click once mining claims it. Protection denials stay respected.
+  cancel-interaction: true
+  # Play the block's mining hit sound during progress, in addition to arm/crack visuals.
+  sounds: true
+  materials:
+    # This filters the held offhand ITEM, not the block being mined.
+    mode: BLACKLIST
+    # Same full-match regex syntax as attack.materials.patterns.
+    patterns: ['LEAD', 'SHIELD', 'EGG', 'SNOWBALL', 'ENDER_PEARL', 'FIREWORK_ROCKET', 'FLINT_AND_STEEL', '.*SPAWN_EGG', '.*BUCKET', '.*POTION', '.*MAP', '.*BOW', '.*SEEDS']

@@ -1,0 +1,6 @@
+{
+  "name": "beastdoublewield-runtime-probe",
+  "private": true,
+  "description": "Local-only client for the isolated BeastDoubleWield acceptance fixture",
+  "dependencies": { "mineflayer": "4.39.0" }
+}

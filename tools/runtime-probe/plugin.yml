@@ -1,0 +1,5 @@
+name: BeastDoubleWieldProbe
+version: '1'
+main: probe.RuntimeProbe
+api-version: '1.13'
+depend: [BeastDoubleWield]

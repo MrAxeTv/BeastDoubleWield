@@ -1,0 +1,23 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cYou do not have permission to do that.'
+PlayerOnly: '%prefix%&cThis command is available to players.'
+PreferenceFailed: '%prefix%&cYour preference could not be saved. Check the server log.'
+Enabled: '%prefix%&aYour offhand actions are enabled.'
+Disabled: '%prefix%&eYour offhand actions are disabled.'
+Reloaded: '%prefix%&aConfiguration and messages reloaded.'
+ReloadFailed: '%prefix%&cReload failed. Your previous settings remain active; check the server log.'
+Status: '%prefix%&7Version &f{version}&7. Server setting: &f{global}&7.'
+PersonalStatus: '%prefix%&7Your offhand setting: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- View plugin and personal settings.
+  %prefix%&6/bdw toggle [on|off] &7- Change your personal setting.
+  %prefix%&6/bdw integrations &7- View integration and client capabilities.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Reload configuration and messages.
+  %prefix%&6/bdw update &7- Check the configured release feed.
+ServicesStatus: '%prefix%&7Services: &f{state}'
+UpdateRequest: '%prefix%&7Update check: &f{state}'
+UpdateAvailable: '%prefix%&aVersion {version} is available: &f{url}'
+UpdateCurrent: '%prefix%&aNo newer release was found.'
+UpdateFailed: '%prefix%&cUpdate check failed; see the server log.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'

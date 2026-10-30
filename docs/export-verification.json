@@ -1,0 +1,86 @@
+[
+    {
+        "Plugin":  "BeastDoubleWield",
+        "Path":  "F:\\McServers\\Console\\servers\\Paper_1.8\\plugins\\BeastDoubleWield.jar",
+        "SHA256":  "92D6EF3095458E51CB9F2C4C42CD3E993037E571728ECA33C39A9B117C7C75B7",
+        "Match":  true
+    },
+    {
+        "Plugin":  "BeastDoubleWield",
+        "Path":  "F:\\McServers\\Console\\servers\\latests\\plugins\\BeastDoubleWield.jar",
+        "SHA256":  "92D6EF3095458E51CB9F2C4C42CD3E993037E571728ECA33C39A9B117C7C75B7",
+        "Match":  true
+    },
+    {
+        "Plugin":  "BeastDoubleWield",
+        "Path":  "F:\\McServers\\Console\\servers\\BC 1\\plugins\\BeastDoubleWield.jar",
+        "SHA256":  "92D6EF3095458E51CB9F2C4C42CD3E993037E571728ECA33C39A9B117C7C75B7",
+        "Match":  true
+    },
+    {
+        "Plugin":  "BeastDoubleWield",
+        "Path":  "F:\\McServers\\Console\\servers\\BC 2\\plugins\\BeastDoubleWield.jar",
+        "SHA256":  "92D6EF3095458E51CB9F2C4C42CD3E993037E571728ECA33C39A9B117C7C75B7",
+        "Match":  true
+    },
+    {
+        "Plugin":  "BeastDoubleWield",
+        "Path":  "F:\\McServers\\Bungee\\Valocity\\s1\\plugins\\BeastDoubleWield.jar",
+        "SHA256":  "92D6EF3095458E51CB9F2C4C42CD3E993037E571728ECA33C39A9B117C7C75B7",
+        "Match":  true
+    },
+    {
+        "Plugin":  "BeastDoubleWield",
+        "Path":  "F:\\McServers\\Bungee\\Valocity\\s2\\plugins\\BeastDoubleWield.jar",
+        "SHA256":  "92D6EF3095458E51CB9F2C4C42CD3E993037E571728ECA33C39A9B117C7C75B7",
+        "Match":  true
+    },
+    {
+        "Plugin":  "BeastDoubleWield",
+        "Path":  "F:\\McServers\\production\\BeastDoubleWield\\BeastDoubleWield-1.0.jar",
+        "SHA256":  "92D6EF3095458E51CB9F2C4C42CD3E993037E571728ECA33C39A9B117C7C75B7",
+        "Match":  true
+    },
+    {
+        "Plugin":  "BeastEnchants",
+        "Path":  "F:\\McServers\\Console\\servers\\Paper_1.8\\plugins\\BeastEnchants.jar",
+        "SHA256":  "78193028D4FC370B232DAB966A31E038E54F89A1A0D391D35E9E46780300620F",
+        "Match":  true
+    },
+    {
+        "Plugin":  "BeastEnchants",
+        "Path":  "F:\\McServers\\Console\\servers\\latests\\plugins\\BeastEnchants.jar",
+        "SHA256":  "78193028D4FC370B232DAB966A31E038E54F89A1A0D391D35E9E46780300620F",
+        "Match":  true
+    },
+    {
+        "Plugin":  "BeastEnchants",
+        "Path":  "F:\\McServers\\Console\\servers\\BC 1\\plugins\\BeastEnchants.jar",
+        "SHA256":  "78193028D4FC370B232DAB966A31E038E54F89A1A0D391D35E9E46780300620F",
+        "Match":  true
+    },
+    {
+        "Plugin":  "BeastEnchants",
+        "Path":  "F:\\McServers\\Console\\servers\\BC 2\\plugins\\BeastEnchants.jar",
+        "SHA256":  "78193028D4FC370B232DAB966A31E038E54F89A1A0D391D35E9E46780300620F",
+        "Match":  true
+    },
+    {
+        "Plugin":  "BeastEnchants",
+        "Path":  "F:\\McServers\\Bungee\\Valocity\\s1\\plugins\\BeastEnchants.jar",
+        "SHA256":  "78193028D4FC370B232DAB966A31E038E54F89A1A0D391D35E9E46780300620F",
+        "Match":  true
+    },
+    {
+        "Plugin":  "BeastEnchants",
+        "Path":  "F:\\McServers\\Bungee\\Valocity\\s2\\plugins\\BeastEnchants.jar",
+        "SHA256":  "78193028D4FC370B232DAB966A31E038E54F89A1A0D391D35E9E46780300620F",
+        "Match":  true
+    },
+    {
+        "Plugin":  "BeastEnchants",
+        "Path":  "F:\\McServers\\production\\BeastEnchants\\BeastEnchants-0.1.0-SNAPSHOT.jar",
+        "SHA256":  "78193028D4FC370B232DAB966A31E038E54F89A1A0D391D35E9E46780300620F",
+        "Match":  true
+    }
+]

@@ -1,0 +1,42 @@
+name: BeastDoubleWield
+version: '${project.version}'
+main: me.mraxetv.beastdoublewield.BeastDoubleWieldPlugin
+api-version: '1.13'
+author: MRAXETV
+description: Offhand combat, tools, and interactions powered by BeastLib.
+depend: [BeastLib]
+softdepend: [BeastRPGItems, BeastEnchants, mcMMO, floodgate, Geyser-Spigot]
+commands:
+  beastdoublewield:
+    description: Manage BeastDoubleWield and your personal offhand setting.
+    aliases: [bdw, doublewield]
+    usage: /<command> [help|status|integrations|toggle [on|off]|reload|update]
+permissions:
+  beastdoublewield.use:
+    description: View plugin help and status.
+    default: true
+  beastdoublewield.toggle:
+    description: Change your own offhand action setting.
+    default: true
+  beastdoublewield.attack:
+    description: Attack entities using the offhand.
+    default: true
+  beastdoublewield.mine:
+    description: Mine blocks using the offhand.
+    default: true
+  beastdoublewield.reload:
+    description: Reload BeastDoubleWield configuration and messages.
+    default: op
+  beastdoublewield.update:
+    description: Check for BeastDoubleWield updates and receive update notices.
+    default: op
+  beastdoublewield.admin:
+    description: Administer BeastDoubleWield.
+    default: op
+    children:
+      beastdoublewield.use: true
+      beastdoublewield.toggle: true
+      beastdoublewield.attack: true
+      beastdoublewield.mine: true
+      beastdoublewield.reload: true
+      beastdoublewield.update: true

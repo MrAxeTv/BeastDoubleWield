@@ -1,0 +1,42 @@
+{
+  "carrier": "FEATHER",
+  "custom_model_data": 35021,
+  "profiles": {
+    "1.14": {
+      "source": "cmd",
+      "pack": {
+        "pack_format": 4,
+        "description": "BeastDoubleWield optional invisible placeholder (Java 1.14)"
+      }
+    },
+    "1.20.2": {
+      "source": "cmd",
+      "pack": {
+        "pack_format": 18,
+        "description": "BeastDoubleWield optional invisible placeholder (Java 1.20.2)"
+      }
+    },
+    "1.21.4": {
+      "source": "item-definitions",
+      "pack": {
+        "pack_format": 46,
+        "description": "BeastDoubleWield optional invisible placeholder (Java 1.21.4)"
+      }
+    },
+    "1.21.8": {
+      "source": "item-definitions",
+      "pack": {
+        "pack_format": 64,
+        "description": "BeastDoubleWield optional invisible placeholder (Java 1.21.8)"
+      }
+    },
+    "26.3": {
+      "source": "item-definitions",
+      "pack": {
+        "min_format": [97, 1],
+        "max_format": [97, 1],
+        "description": "BeastDoubleWield optional invisible placeholder (Java 26.3)"
+      }
+    }
+  }
+}

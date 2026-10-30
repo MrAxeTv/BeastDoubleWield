@@ -1,0 +1,8 @@
+name: BeastDoubleWieldPlaceholderProbe
+version: '1'
+main: probe.PlaceholderProbe
+api-version: '1.14'
+depend: [BeastDoubleWield]
+commands:
+  phprobe:
+    description: Isolated test-fixture acknowledgement

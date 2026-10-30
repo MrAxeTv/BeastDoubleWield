@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>me.mraxetv.beastdoublewield</groupId>
+  <artifactId>beastdoublewield</artifactId>
+  <version>1.0</version>
+  <name>BeastDoubleWield</name>
+  <url>https://github.com/MrAxeTv/BeastDoubleWield</url>
+  <description>Native offhand combat and progressive mining with BeastLib integration.</description>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.build.outputTimestamp>2026-10-30T00:00:00Z</project.build.outputTimestamp>
+    <maven.compiler.release>8</maven.compiler.release>
+    <beastdoublewield.export.root>F:/McServers</beastdoublewield.export.root>
+    <beastdoublewield.export.skip>false</beastdoublewield.export.skip>
+  </properties>
+  <repositories><repository><id>spigot-snapshots</id><url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url></repository></repositories>
+  <dependencies>
+    <dependency><groupId>org.spigotmc</groupId><artifactId>spigot-api</artifactId><version>1.20.2-R0.1-SNAPSHOT</version><scope>provided</scope></dependency>
+    <dependency><groupId>me.mraxetv.beastlib</groupId><artifactId>Core</artifactId><version>1.7.3</version><classifier>shaded</classifier><scope>provided</scope><exclusions><exclusion><groupId>*</groupId><artifactId>*</artifactId></exclusion></exclusions></dependency>
+    <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter</artifactId><version>5.11.4</version><scope>test</scope></dependency>
+    <dependency><groupId>org.mockito</groupId><artifactId>mockito-core</artifactId><version>5.14.2</version><scope>test</scope></dependency>
+  </dependencies>
+  <build>
+    <finalName>BeastDoubleWield-${project.version}</finalName>
+    <resources>
+      <resource><directory>src/main/resources</directory><filtering>true</filtering><includes><include>plugin.yml</include></includes></resource>
+      <resource><directory>src/main/resources</directory><filtering>false</filtering><excludes><exclude>plugin.yml</exclude></excludes></resource>
+    </resources>
+    <plugins>
+      <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><version>3.13.0</version><configuration><release>8</release></configuration></plugin>
+      <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-resources-plugin</artifactId><version>3.3.1</version></plugin>
+      <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId><version>3.5.2</version><configuration><useModulePath>false</useModulePath><argLine>-Dnet.bytebuddy.experimental=true</argLine></configuration></plugin>
+      <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-jar-plugin</artifactId><version>3.5.0</version></plugin>
+      <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-antrun-plugin</artifactId><version>3.2.0</version><executions><execution>
+        <id>export-plugin-jar</id><phase>package</phase><goals><goal>run</goal></goals><configuration><skip>${beastdoublewield.export.skip}</skip><target name="export-plugin-jar">
+          <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${beastdoublewield.export.root}/Console/servers/Paper_1.8/plugins/BeastDoubleWield.jar" overwrite="true" failonerror="true" />
+          <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${beastdoublewield.export.root}/Console/servers/latests/plugins/BeastDoubleWield.jar" overwrite="true" failonerror="true" />
+          <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${beastdoublewield.export.root}/Console/servers/BC 1/plugins/BeastDoubleWield.jar" overwrite="true" failonerror="true" />
+          <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${beastdoublewield.export.root}/Console/servers/BC 2/plugins/BeastDoubleWield.jar" overwrite="true" failonerror="true" />
+          <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${beastdoublewield.export.root}/Bungee/Valocity/s1/plugins/BeastDoubleWield.jar" overwrite="true" failonerror="true" />
+          <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${beastdoublewield.export.root}/Bungee/Valocity/s2/plugins/BeastDoubleWield.jar" overwrite="true" failonerror="true" />
+          <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${beastdoublewield.export.root}/production/BeastDoubleWield/BeastDoubleWield-${project.version}.jar" overwrite="true" failonerror="true" />
+        </target></configuration>
+      </execution></executions></plugin>
+    </plugins>
+  </build>
+</project>

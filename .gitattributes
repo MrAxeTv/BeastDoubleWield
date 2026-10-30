@@ -1,0 +1,2 @@
+# Preserve the supplied bStats source byte-for-byte, including its line endings.
+src/main/java/me/mraxetv/beastdoublewield/lib/bstats/Metrics.java -text
