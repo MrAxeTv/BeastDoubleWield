@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cJums nav atļaujas veikt šo darbību.'
+PlayerOnly: '%prefix%&cŠo komandu var izmantot tikai spēlētāji.'
+PreferenceFailed: '%prefix%&cNeizdevās saglabāt jūsu iestatījumu. Pārbaudiet servera žurnālu.'
+Enabled: '%prefix%&aJūsu otrās rokas darbības ir ieslēgtas.'
+Disabled: '%prefix%&eJūsu otrās rokas darbības ir izslēgtas.'
+StateOn: 'ieslēgts'
+StateOff: 'izslēgts'
+Reloaded: '%prefix%&aKonfigurācija un ziņojumi ir pārlādēti.'
+ReloadFailed: '%prefix%&cPārlāde neizdevās. Iepriekšējie iestatījumi paliek spēkā; pārbaudiet servera žurnālu.'
+Status: '%prefix%&7Versija &f{version}&7. Servera iestatījums: &f{global}&7.'
+PersonalStatus: '%prefix%&7Jūsu otrās rokas iestatījums: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Apskatīt spraudņa un personīgos iestatījumus.
+  %prefix%&6/bdw toggle [on|off] &7- Mainīt personīgo iestatījumu.
+  %prefix%&6/bdw integrations &7- Apskatīt integrāciju un klienta iespējas.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Pārlādēt konfigurāciju un ziņojumus.
+  %prefix%&6/bdw update &7- Pārbaudīt norādīto atjauninājumu avotu.
+ServicesStatus: '%prefix%&7Pakalpojumi: &f{state}'
+UpdateRequest: '%prefix%&7Atjauninājumu pārbaude: &f{state}'
+UpdateAvailable: '%prefix%&aIr pieejama versija {version}: &f{url}'
+UpdateCurrent: '%prefix%&aJaunāka versija netika atrasta.'
+UpdateFailed: '%prefix%&cAtjauninājumu pārbaude neizdevās; skatiet servera žurnālu.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'

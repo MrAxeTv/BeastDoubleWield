@@ -1,3 +1,4 @@
+# English (United Kingdom)
 Prefix: '&8[&6BeastDoubleWield&8] &r'
 NoPermission: '%prefix%&cYou do not have permission to do that.'
 PlayerOnly: '%prefix%&cThis command is available to players.'
@@ -21,3 +22,5 @@ UpdateAvailable: '%prefix%&aVersion {version} is available: &f{url}'
 UpdateCurrent: '%prefix%&aNo newer release was found.'
 UpdateFailed: '%prefix%&cUpdate check failed; see the server log.'
 IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'on'
+StateOff: 'off'

@@ -12,7 +12,7 @@ The standard shared file is `plugins/bStats/config.yml`. Existing opt-out settin
 
 To opt out, set `enabled: false` in that file and restart the server. To enable it, use `enabled: true` and restart. The plugin build does not start/reload a server or modify a deployed bStats configuration.
 
-The `metrics.enabled`, `metrics.endpoint` and `metrics.interval-minutes` keys in BeastDoubleWield's own config still control the older, optional **custom HTTPS telemetry** service. They do not configure bStats. Leave that custom block disabled when using only bStats; no custom endpoint is required for bStats.
+The `Metrics.Enabled`, `Metrics.Endpoint` and `Metrics.IntervalMinutes` keys in BeastDoubleWield's own config still control the older, optional **custom HTTPS telemetry** service. They do not configure bStats. Leave that custom block disabled when using only bStats; no custom endpoint is required for bStats.
 
 ## Data and timing
 

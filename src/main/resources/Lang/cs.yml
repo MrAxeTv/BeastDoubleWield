@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cK tomu nemáte oprávnění.'
+PlayerOnly: '%prefix%&cTento příkaz je dostupný hráčům.'
+PreferenceFailed: '%prefix%&cVaši volbu se nepodařilo uložit. Zkontrolujte protokol serveru.'
+Enabled: '%prefix%&aAkce vaší vedlejší ruky jsou zapnuté.'
+Disabled: '%prefix%&eAkce vaší vedlejší ruky jsou vypnuté.'
+Reloaded: '%prefix%&aKonfigurace a zprávy byly znovu načteny.'
+ReloadFailed: '%prefix%&cOpětovné načtení selhalo. Předchozí nastavení zůstává aktivní; zkontrolujte protokol serveru.'
+Status: '%prefix%&7Verze &f{version}&7. Nastavení serveru: &f{global}&7.'
+PersonalStatus: '%prefix%&7Vaše nastavení vedlejší ruky: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Zobrazí nastavení doplňku a osobní nastavení.
+  %prefix%&6/bdw toggle [on|off] &7- Změní vaše osobní nastavení.
+  %prefix%&6/bdw integrations &7- Zobrazí možnosti integrací a klienta.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Znovu načte konfiguraci a zprávy.
+  %prefix%&6/bdw update &7- Zkontroluje nastavený zdroj vydání.
+ServicesStatus: '%prefix%&7Služby: &f{state}'
+UpdateRequest: '%prefix%&7Kontrola aktualizací: &f{state}'
+UpdateAvailable: '%prefix%&aJe dostupná verze {version}: &f{url}'
+UpdateCurrent: '%prefix%&aNebylo nalezeno novější vydání.'
+UpdateFailed: '%prefix%&cKontrola aktualizací selhala; podívejte se do protokolu serveru.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'zapnuto'
+StateOff: 'vypnuto'

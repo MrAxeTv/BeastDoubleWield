@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cليس لديك إذن للقيام بذلك.'
+PlayerOnly: '%prefix%&cهذا الأمر متاح للاعبين.'
+PreferenceFailed: '%prefix%&cتعذّر حفظ تفضيلك. راجع سجل الخادم.'
+Enabled: '%prefix%&aتم تفعيل إجراءات يدك الثانوية.'
+Disabled: '%prefix%&eتم تعطيل إجراءات يدك الثانوية.'
+Reloaded: '%prefix%&aأُعيد تحميل الإعدادات والرسائل.'
+ReloadFailed: '%prefix%&cفشلت إعادة التحميل. لا تزال إعداداتك السابقة سارية؛ راجع سجل الخادم.'
+Status: '%prefix%&7الإصدار &f{version}&7. إعداد الخادم: &f{global}&7.'
+PersonalStatus: '%prefix%&7إعداد يدك الثانوية: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- اعرض إعدادات الإضافة وإعداداتك الشخصية.
+  %prefix%&6/bdw toggle [on|off] &7- غيّر إعدادك الشخصي.
+  %prefix%&6/bdw integrations &7- اعرض إمكانات التكامل والعميل.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- أعد تحميل الإعدادات والرسائل.
+  %prefix%&6/bdw update &7- تحقّق من مصدر الإصدارات المحدّد في الإعدادات.
+ServicesStatus: '%prefix%&7الخدمات: &f{state}'
+UpdateRequest: '%prefix%&7فحص التحديثات: &f{state}'
+UpdateAvailable: '%prefix%&aالإصدار {version} متاح: &f{url}'
+UpdateCurrent: '%prefix%&aلم يُعثر على إصدار أحدث.'
+UpdateFailed: '%prefix%&cفشل فحص التحديثات؛ راجع سجل الخادم.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'مفعّل'
+StateOff: 'معطّل'

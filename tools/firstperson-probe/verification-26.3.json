@@ -1,14 +1,16 @@
 {
-    "schemaVersion":  1,
-    "verifiedAtUtc":  "2026-10-30T21:23:21.4031879Z",
+    "schemaVersion":  3,
+    "verifiedAtUtc":  "2026-10-30T23:48:43.5779196Z",
     "minecraftClient":  "26.3",
     "artifact":  "BeastDoubleWield-firstperson-arm-26.3.zip",
-    "zipSha256":  "aad341eaee2215902f7a92593f49927627f7fae1c8e6de382b66565c2c7de24f",
+    "zipSha256":  "889048677fc4774741d4b3c6dfef52c7c20fabf17a23a724dcae3af5e3ccc26a",
     "normalizedSourceSha256":  {
+                                   "assets/beastdoublewield/models/item/empty_offhand.json":  "e8c61a6257a8969b1e14ef8a27e87bf83be20ee6aa8119cfde87ff327cf00cac",
                                    "assets/beastdoublewield/models/item/firstperson_arm.json":  "04f2e99f750acb930bf4d0c38acedd16cbec308b8901fbe0db248c0afaa1fcef",
                                    "assets/beastdoublewield/shaders/include/firstperson_arm.glsl":  "f1326526ff7e46ab61b2f5a0360f6a9892405b1ae3914e845c209162fd3dd9a4",
+                                   "assets/minecraft/atlases/items.json":  "2a615430c248e403eca692ab6f790cfcffcec632337be24a69204f93a0cf7114",
                                    "assets/minecraft/items/feather.json":  "500bd5bf61b2c4fbaf8cf54eea086768f1d7751c0651bb9647e8d0bdc01765cf",
-                                   "assets/minecraft/items/player_head.json":  "8de12b2625611fbdcd547db3c7f3690bcb1a08e086dc2712539d5cbdca6fc532",
+                                   "assets/minecraft/items/player_head.json":  "420204b5d4b4d1911bfbd17931b8e15a4d8a4a9ba769eb8de911280f68933799",
                                    "assets/minecraft/shaders/core/entity.fsh":  "39921812a8b6427de38689a96e120bd9bfde4c84171286f95fbe855c0c748d7a",
                                    "assets/minecraft/shaders/core/entity.vsh":  "27886dac1c2c6d513b47fed6650618a8c5d1ee8ad2c9ca550b48b60079a1f44c",
                                    "pack.mcmeta":  "f15cfdb1be4ad09728db4c3cf289e33c6a17b6947cfaf8be775486f9c71b6e8f"
@@ -31,32 +33,73 @@
                        "liveGame":  false,
                        "worldOitCompositionRendered":  false,
                        "performanceBenchmarked":  false,
-                       "fixedFovDegrees":  70
+                       "fixedFovDegrees":  70,
+                       "nativeRestingPose":  "Actual renderPlayerArm plus native PlayerModel arm/sleeve and AvatarRenderer resting roll; reference applies the private size signature about the native arm center without item JSON transforms",
+                       "shaderBytesUnchanged":  true,
+                       "nativeGuiSlotIcon":  {
+                                                 "nativeAtlasAndCuboidCodecs":  true,
+                                                 "nativeFaceBakeryAndGuiTransform":  true,
+                                                 "nativeItemShaderAndFlatLighting":  true,
+                                                 "sourceSprite":  "minecraft:gui/sprites/container/slot/shield",
+                                                 "sourceSpriteSha256":  "28ce8e78588484af09201ceb0999193391511a6a039bf5f650084e7219138c7b",
+                                                 "guiScales":  [
+                                                                   1,
+                                                                   2,
+                                                                   3,
+                                                                   4
+                                                               ],
+                                                 "pixelDifferences":  0,
+                                                 "sameGuiContextForInventoryAndHud":  true,
+                                                 "textureArtworkBundled":  false
+                                             }
                    },
     "runs":  [
                  {
                      "width":  1920,
                      "height":  1080,
-                     "checks":  198,
+                     "checks":  241,
                      "scenarios":  40,
                      "maxPixelDifferences":  2,
-                     "totalPixelDifferences":  8,
-                     "interiorPixelDifferences":  0
+                     "totalPixelDifferences":  13,
+                     "interiorPixelDifferences":  0,
+                     "nativeRestScenarios":  8,
+                     "nativeRestMaxPixelDifferences":  3,
+                     "nativeRestTotalPixelDifferences":  7,
+                     "nativeRestInteriorPixelDifferences":  0,
+                     "nativeGuiSlotIconScales":  4,
+                     "nativeGuiSlotIconPixelDifferences":  0
                  },
                  {
                      "width":  3840,
                      "height":  2160,
-                     "checks":  198,
+                     "checks":  241,
                      "scenarios":  40,
-                     "maxPixelDifferences":  5,
-                     "totalPixelDifferences":  45,
-                     "interiorPixelDifferences":  0
+                     "maxPixelDifferences":  6,
+                     "totalPixelDifferences":  40,
+                     "interiorPixelDifferences":  0,
+                     "nativeRestScenarios":  8,
+                     "nativeRestMaxPixelDifferences":  13,
+                     "nativeRestTotalPixelDifferences":  33,
+                     "nativeRestInteriorPixelDifferences":  0,
+                     "nativeGuiSlotIconScales":  4,
+                     "nativeGuiSlotIconPixelDifferences":  0
                  }
              ],
     "limitations":  [
                         "Finite native mesh and hidden GPU fixture; no client resource-pack load or live gameplay test.",
                         "Residual pixel differences occur only adjacent to a reference texture or geometry boundary.",
                         "One local NVIDIA GPU; other GPUs, Minecraft versions, graphics mods and other shader packs were not validated.",
-                        "OIT phases compile and link; the full world transparency composition pass is not reproduced."
-                    ]
+                        "OIT phases compile and link; the full world transparency composition pass is not reproduced.",
+                        "Resting orientation/position match the native empty arm with the documented size signature; animated carriers retain held-item swings, not identical empty-arm swings.",
+                        "GUI icon checks use native baked geometry, item shaders and flat lighting in the hidden GPU fixture; no live inventory screen or complete client atlas reload was exercised. The same GUI item selection also appears in the offhand HUD."
+                    ],
+    "originalPoseRegression":  {
+                                   "zipSha256":  "aad341eaee2215902f7a92593f49927627f7fae1c8e6de382b66565c2c7de24f",
+                                   "width":  1920,
+                                   "height":  1080,
+                                   "scenario":  "wide-right-skin-native-rest",
+                                   "pixelDifferences":  79458,
+                                   "interiorPixelDifferences":  75910,
+                                   "rejectedByIndependentNativeRestCheck":  true
+                               }
 }

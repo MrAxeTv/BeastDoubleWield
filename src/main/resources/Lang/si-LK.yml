@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cමෙය කිරීමට ඔබට අවසර නැත.'
+PlayerOnly: '%prefix%&cමෙම විධානය භාවිත කළ හැක්කේ ක්‍රීඩකයන්ට පමණි.'
+PreferenceFailed: '%prefix%&cඔබගේ සැකසුම සුරැකීමට නොහැකි විය. සේවාදායකයේ ලොගය පරීක්ෂා කරන්න.'
+Enabled: '%prefix%&aඔබගේ අනෙක් අතේ ක්‍රියා සක්‍රියයි.'
+Disabled: '%prefix%&eඔබගේ අනෙක් අතේ ක්‍රියා අක්‍රියයි.'
+StateOn: 'සක්‍රිය'
+StateOff: 'අක්‍රිය'
+Reloaded: '%prefix%&aවින්‍යාසය සහ පණිවිඩ නැවත පූරණය කරන ලදී.'
+ReloadFailed: '%prefix%&cනැවත පූරණය අසාර්ථක විය. පෙර සැකසුම් තවමත් ක්‍රියාත්මකයි; සේවාදායකයේ ලොගය පරීක්ෂා කරන්න.'
+Status: '%prefix%&7අනුවාදය &f{version}&7. සේවාදායක සැකසුම: &f{global}&7.'
+PersonalStatus: '%prefix%&7ඔබගේ අනෙක් අතේ සැකසුම: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- ප්ලගිනයේ සහ ඔබගේ පෞද්ගලික සැකසුම් බලන්න.
+  %prefix%&6/bdw toggle [on|off] &7- ඔබගේ පෞද්ගලික සැකසුම වෙනස් කරන්න.
+  %prefix%&6/bdw integrations &7- ඒකාබද්ධතා සහ ක්ලයන්ට් හැකියාවන් බලන්න.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- වින්‍යාසය සහ පණිවිඩ නැවත පූරණය කරන්න.
+  %prefix%&6/bdw update &7- සකසා ඇති යාවත්කාලීන මූලාශ්‍රය පරීක්ෂා කරන්න.
+ServicesStatus: '%prefix%&7සේවාවන්: &f{state}'
+UpdateRequest: '%prefix%&7යාවත්කාලීන පරීක්ෂාව: &f{state}'
+UpdateAvailable: '%prefix%&a{version} අනුවාදය ලබා ගත හැක: &f{url}'
+UpdateCurrent: '%prefix%&aනව අනුවාදයක් හමු නොවීය.'
+UpdateFailed: '%prefix%&cයාවත්කාලීන පරීක්ෂාව අසාර්ථක විය; සේවාදායකයේ ලොගය බලන්න.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'

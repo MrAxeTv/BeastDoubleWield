@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cこの操作を行う権限がありません。'
+PlayerOnly: '%prefix%&cこのコマンドはプレイヤーのみが使用できます。'
+PreferenceFailed: '%prefix%&c個人設定を保存できませんでした。サーバーログを確認してください。'
+Enabled: '%prefix%&aオフハンドの操作を有効にしました。'
+Disabled: '%prefix%&eオフハンドの操作を無効にしました。'
+StateOn: '有効'
+StateOff: '無効'
+Reloaded: '%prefix%&a設定とメッセージを再読み込みしました。'
+ReloadFailed: '%prefix%&c再読み込みに失敗しました。以前の設定が引き続き有効です。サーバーログを確認してください。'
+Status: '%prefix%&7バージョン &f{version}&7。サーバー設定: &f{global}&7。'
+PersonalStatus: '%prefix%&7あなたのオフハンド設定: &f{state}&7。'
+Help: |-
+  %prefix%&6/bdw status &7- プラグインと個人の設定を表示します。
+  %prefix%&6/bdw toggle [on|off] &7- 個人設定を変更します。
+  %prefix%&6/bdw integrations &7- 連携機能とクライアントの対応状況を表示します。
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- 設定とメッセージを再読み込みします。
+  %prefix%&6/bdw update &7- 設定された更新元を確認します。
+ServicesStatus: '%prefix%&7サービス: &f{state}'
+UpdateRequest: '%prefix%&7更新の確認: &f{state}'
+UpdateAvailable: '%prefix%&aバージョン {version} が利用可能です: &f{url}'
+UpdateCurrent: '%prefix%&a新しいバージョンは見つかりませんでした。'
+UpdateFailed: '%prefix%&c更新の確認に失敗しました。サーバーログを確認してください。'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'

@@ -72,9 +72,9 @@ public final class DoubleWieldCommand implements CommandExecutor, TabCompleter {
         if (!allowed(sender, "use")) return denied(sender);
         if (action.equals("status") && args.length == 1) {
             plugin.message(sender, "Status", "version", plugin.getDescription().getVersion(),
-                    "global", plugin.getConfig().getBoolean("enabled", true) ? "on" : "off");
+                    "global", plugin.stateName(plugin.getConfig().getBoolean("Enabled", true)));
             if (sender instanceof Player)
-                plugin.message(sender, "PersonalStatus", "state", plugin.isPersonallyEnabled((Player) sender) ? "on" : "off");
+                plugin.message(sender, "PersonalStatus", "state", plugin.stateName(plugin.isPersonallyEnabled((Player) sender)));
             if (plugin.getRuntimeServices() != null) plugin.message(sender, "ServicesStatus", "state", plugin.getRuntimeServices().describe());
             if (plugin.getBStatsTelemetry() != null) plugin.message(sender, "ServicesStatus", "state", plugin.getBStatsTelemetry().describe());
             if (plugin.getPlaceholderService() != null) plugin.message(sender, "ServicesStatus", "state", plugin.getPlaceholderService().describe());

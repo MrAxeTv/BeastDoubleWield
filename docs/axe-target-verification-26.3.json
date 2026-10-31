@@ -1,0 +1,17 @@
+{
+    "materials":  2278,
+    "expected":  130,
+    "classified":  130,
+    "trueNegatives":  2148,
+    "missing":  "[]",
+    "extra":  "[]",
+    "passed":  true,
+    "sourceSha256":  "ec3e648ca11386340661a29d3f7adf7ba32fc6a3bd663e4700eec6e3a9b8bb06",
+    "nativeJar":  "target/arm-runtime-26.3/versions/26.3/paper-26.3.jar",
+    "nativeRules":  "data/minecraft/block_transformer/axe.json",
+    "paperApiVersion":  "26.3.build.188-stable",
+    "methodExtraction":  "Exact axeTarget method from current production ItemRules.java; compiled/executed in disposable Java source harness without server startup",
+    "nativeJarSha256":  "9bd1ea45df12f3c6882d2fc0eb5682d243c640ac12e9b5e25dd8f8b7c2420061",
+    "liveClient":  false,
+    "serverStarted":  false
+}

@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cУ вас нет прав для этого действия.'
+PlayerOnly: '%prefix%&cЭта команда доступна только игрокам.'
+PreferenceFailed: '%prefix%&cНе удалось сохранить вашу настройку. Проверьте журнал сервера.'
+Enabled: '%prefix%&aДействия второй рукой включены.'
+Disabled: '%prefix%&eДействия второй рукой отключены.'
+StateOn: 'включено'
+StateOff: 'выключено'
+Reloaded: '%prefix%&aКонфигурация и сообщения перезагружены.'
+ReloadFailed: '%prefix%&cПерезагрузка не удалась. Прежние настройки остаются в силе; проверьте журнал сервера.'
+Status: '%prefix%&7Версия &f{version}&7. Настройка сервера: &f{global}&7.'
+PersonalStatus: '%prefix%&7Ваша настройка второй руки: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Показать настройки плагина и личные настройки.
+  %prefix%&6/bdw toggle [on|off] &7- Изменить личную настройку.
+  %prefix%&6/bdw integrations &7- Показать интеграции и возможности клиента.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Перезагрузить конфигурацию и сообщения.
+  %prefix%&6/bdw update &7- Проверить настроенный источник обновлений.
+ServicesStatus: '%prefix%&7Службы: &f{state}'
+UpdateRequest: '%prefix%&7Проверка обновлений: &f{state}'
+UpdateAvailable: '%prefix%&aДоступна версия {version}: &f{url}'
+UpdateCurrent: '%prefix%&aБолее новая версия не найдена.'
+UpdateFailed: '%prefix%&cНе удалось проверить обновления; смотрите журнал сервера.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'

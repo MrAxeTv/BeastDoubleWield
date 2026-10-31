@@ -1,7 +1,9 @@
 package me.mraxetv.beastdoublewield.compat;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Block;
@@ -66,6 +68,14 @@ final class LegacyNative {
         float volume = ((Number) invoke(resolve(sounds.getClass(), "sound volume", float.class, new String[]{"a", "getVolume"}), sounds)).floatValue();
         float pitch = ((Number) invoke(resolve(sounds.getClass(), "sound pitch", float.class, new String[]{"b", "getPitch"}), sounds)).floatValue();
         player.playSound(block.getLocation(), hit, volume * 0.25F, pitch);
+    }
+    static Runnable prepareBreakSound(Player player, Block block) {
+        // Older Bukkit lacks SoundGroup (and 1.9 lacks SoundCategory). Its
+        // actor-only STEP_SOUND effect lets the client select the native break
+        // sound/category and particles from this material's default state.
+        Material material = block.getType();
+        Location location = block.getLocation().add(0.5, 0.5, 0.5);
+        return () -> player.playEffect(location, Effect.STEP_SOUND, material);
     }
     static Object soundGroup(Object state) {
         if (hasMethod(state.getClass(), "getStepSound"))

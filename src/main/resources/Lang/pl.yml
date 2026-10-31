@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cNie masz uprawnień do wykonania tej czynności.'
+PlayerOnly: '%prefix%&cTa komenda jest dostępna tylko dla graczy.'
+PreferenceFailed: '%prefix%&cNie udało się zapisać twojego ustawienia. Sprawdź dziennik serwera.'
+Enabled: '%prefix%&aDziałania drugą ręką są włączone.'
+Disabled: '%prefix%&eDziałania drugą ręką są wyłączone.'
+StateOn: 'włączone'
+StateOff: 'wyłączone'
+Reloaded: '%prefix%&aKonfiguracja i wiadomości zostały ponownie wczytane.'
+ReloadFailed: '%prefix%&cPonowne wczytanie nie powiodło się. Poprzednie ustawienia nadal obowiązują; sprawdź dziennik serwera.'
+Status: '%prefix%&7Wersja &f{version}&7. Ustawienie serwera: &f{global}&7.'
+PersonalStatus: '%prefix%&7Twoje ustawienie drugiej ręki: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Wyświetl ustawienia wtyczki i ustawienia osobiste.
+  %prefix%&6/bdw toggle [on|off] &7- Zmień swoje ustawienie osobiste.
+  %prefix%&6/bdw integrations &7- Wyświetl integracje i możliwości klienta.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Ponownie wczytaj konfigurację i wiadomości.
+  %prefix%&6/bdw update &7- Sprawdź skonfigurowane źródło aktualizacji.
+ServicesStatus: '%prefix%&7Usługi: &f{state}'
+UpdateRequest: '%prefix%&7Sprawdzanie aktualizacji: &f{state}'
+UpdateAvailable: '%prefix%&aDostępna jest wersja {version}: &f{url}'
+UpdateCurrent: '%prefix%&aNie znaleziono nowszej wersji.'
+UpdateFailed: '%prefix%&cSprawdzanie aktualizacji nie powiodło się; sprawdź dziennik serwera.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'

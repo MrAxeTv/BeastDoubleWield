@@ -36,6 +36,65 @@ public final class PlaceholderItem {
         return isArm(item) ? new ItemStack(Material.AIR) : item;
     }
 
+    /** Whether native inventory quick-move would choose this item's offhand slot. */
+    public static boolean isOffhandEquipment(ItemStack item) {
+        return EquipmentSupport.LOOKUP.isOffhand(item);
+    }
+
+    /** Keep optional component discovery separate from skin/profile initialization. */
+    private static final class EquipmentSupport {
+        private static final EquipmentLookup LOOKUP = EquipmentLookup.find();
+    }
+
+    /** Uses effective components, including defaults and explicit removals. */
+    static final class EquipmentLookup {
+        private final Object equippableType;
+        private final java.lang.reflect.Method getData, slot, defaultSlot;
+
+        EquipmentLookup(Object equippableType, java.lang.reflect.Method getData,
+                        java.lang.reflect.Method slot, java.lang.reflect.Method defaultSlot) {
+            this.equippableType = equippableType;
+            this.getData = getData;
+            this.slot = slot;
+            this.defaultSlot = defaultSlot;
+        }
+
+        static EquipmentLookup find() {
+            java.lang.reflect.Method fallback = null;
+            try { fallback = Material.class.getMethod("getEquipmentSlot"); }
+            catch (ReflectiveOperationException | LinkageError | RuntimeException unavailable) { }
+            try {
+                Class<?> valued = Class.forName("io.papermc.paper.datacomponent.DataComponentType$Valued");
+                java.lang.reflect.Method getter = ItemStack.class.getMethod("getData", valued);
+                Object type = Class.forName("io.papermc.paper.datacomponent.DataComponentTypes").getField("EQUIPPABLE").get(null);
+                java.lang.reflect.Method slot = Class.forName("io.papermc.paper.datacomponent.item.Equippable").getMethod("slot");
+                return new EquipmentLookup(type, getter, slot, fallback);
+            } catch (ReflectiveOperationException | LinkageError | RuntimeException unavailable) {
+                return new EquipmentLookup(null, null, null, fallback);
+            }
+        }
+
+        boolean isOffhand(ItemStack item) {
+            if (item == null || item.getAmount() < 1 || item.getType() == null || item.getType() == Material.AIR) return false;
+            try {
+                Object equipmentSlot;
+                if (getData != null) {
+                    Object component = getData.invoke(item, equippableType);
+                    // Null is an effective absence/removal, not an unavailable API.
+                    if (component == null) return false;
+                    equipmentSlot = slot.invoke(component);
+                } else {
+                    if (defaultSlot == null) return false;
+                    equipmentSlot = defaultSlot.invoke(item.getType());
+                }
+                return equipmentSlot instanceof Enum && "OFF_HAND".equals(((Enum<?>) equipmentSlot).name());
+            } catch (ReflectiveOperationException | LinkageError | RuntimeException unavailable) {
+                // A failed query cannot establish offhand intent for this stack.
+                return false;
+            }
+        }
+    }
+
     public static boolean armSupported(String version) {
         if (!SUPPORTED || !armVersion(version)) return false;
         try {

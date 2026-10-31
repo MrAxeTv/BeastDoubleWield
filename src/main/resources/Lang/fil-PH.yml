@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cWala kang pahintulot na gawin iyon.'
+PlayerOnly: '%prefix%&cMagagamit ng mga manlalaro ang utos na ito.'
+PreferenceFailed: '%prefix%&cHindi na-save ang iyong kagustuhan. Tingnan ang talaan ng server.'
+Enabled: '%prefix%&aNaka-on ang mga aksiyon ng iyong pangalawang kamay.'
+Disabled: '%prefix%&eNaka-off ang mga aksiyon ng iyong pangalawang kamay.'
+Reloaded: '%prefix%&aMuling na-load ang mga setting at mensahe.'
+ReloadFailed: '%prefix%&cNabigo ang muling pag-load. Nananatiling aktibo ang dati mong mga setting; tingnan ang talaan ng server.'
+Status: '%prefix%&7Bersiyon &f{version}&7. Setting ng server: &f{global}&7.'
+PersonalStatus: '%prefix%&7Setting ng iyong pangalawang kamay: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Tingnan ang mga setting ng plugin at ang iyong mga setting.
+  %prefix%&6/bdw toggle [on|off] &7- Baguhin ang iyong personal na setting.
+  %prefix%&6/bdw integrations &7- Tingnan ang mga kakayahan ng mga integrasyon at ng kliyente.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Muling i-load ang mga setting at mensahe.
+  %prefix%&6/bdw update &7- Suriin ang itinakdang pinagmumulan ng mga bagong bersiyon.
+ServicesStatus: '%prefix%&7Mga serbisyo: &f{state}'
+UpdateRequest: '%prefix%&7Pagsuri sa mga update: &f{state}'
+UpdateAvailable: '%prefix%&aMay bersiyong {version}: &f{url}'
+UpdateCurrent: '%prefix%&aWalang nakitang mas bagong bersiyon.'
+UpdateFailed: '%prefix%&cNabigo ang pagsuri sa mga update; tingnan ang talaan ng server.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'naka-on'
+StateOff: 'naka-off'

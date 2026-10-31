@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cאין לך הרשאה לעשות זאת.'
+PlayerOnly: '%prefix%&cפקודה זו זמינה לשחקנים.'
+PreferenceFailed: '%prefix%&cלא ניתן היה לשמור את ההעדפה שלך. יש לבדוק את יומן השרת.'
+Enabled: '%prefix%&aהפעולות של היד המשנית שלך מופעלות.'
+Disabled: '%prefix%&eהפעולות של היד המשנית שלך מושבתות.'
+Reloaded: '%prefix%&aההגדרות וההודעות נטענו מחדש.'
+ReloadFailed: '%prefix%&cהטעינה מחדש נכשלה. ההגדרות הקודמות שלך נותרו פעילות; יש לבדוק את יומן השרת.'
+Status: '%prefix%&7גרסה &f{version}&7. הגדרת השרת: &f{global}&7.'
+PersonalStatus: '%prefix%&7הגדרת היד המשנית שלך: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- הצגת הגדרות התוסף וההגדרות האישיות שלך.
+  %prefix%&6/bdw toggle [on|off] &7- שינוי ההגדרה האישית שלך.
+  %prefix%&6/bdw integrations &7- הצגת יכולות השילובים ותוכנת הלקוח.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- טעינה מחדש של ההגדרות וההודעות.
+  %prefix%&6/bdw update &7- בדיקת מקור הגרסאות שהוגדר.
+ServicesStatus: '%prefix%&7שירותים: &f{state}'
+UpdateRequest: '%prefix%&7בדיקת עדכונים: &f{state}'
+UpdateAvailable: '%prefix%&aגרסה {version} זמינה: &f{url}'
+UpdateCurrent: '%prefix%&aלא נמצאה גרסה חדשה יותר.'
+UpdateFailed: '%prefix%&cבדיקת העדכונים נכשלה; יש לעיין ביומן השרת.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'מופעל'
+StateOff: 'מושבת'

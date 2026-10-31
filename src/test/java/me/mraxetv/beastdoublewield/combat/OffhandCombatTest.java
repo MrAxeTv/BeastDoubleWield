@@ -61,9 +61,9 @@ class OffhandCombatTest {
         off = mock(ItemStack.class);
         speed = mock(AttributeInstance.class);
         config = new YamlConfiguration();
-        config.set("attack.enabled", true);
-        config.set("attack.reach", 3.0);
-        config.set("disabled-worlds", Collections.emptyList());
+        config.set("Attack.Enabled", true);
+        config.set("Attack.Reach", 3.0);
+        config.set("DisabledWorlds", Collections.emptyList());
         when(plugin.getConfig()).thenReturn(config);
         when(plugin.getServer()).thenReturn(server);
         when(plugin.getLogger()).thenReturn(Logger.getLogger("OffhandCombatTest"));
@@ -231,7 +231,7 @@ class OffhandCombatTest {
 
     @Test
     void disabledCooldownStillDeduplicatesSameTick() {
-        config.set("attack.cooldown", false);
+        config.set("Attack.Cooldown", false);
         assertTrue(combat.attack(player, target));
         assertTrue(combat.attack(player, target));
         verify(player).attack(target);

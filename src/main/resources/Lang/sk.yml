@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cNa túto akciu nemáš oprávnenie.'
+PlayerOnly: '%prefix%&cTento príkaz môžu používať iba hráči.'
+PreferenceFailed: '%prefix%&cTvoje nastavenie sa nepodarilo uložiť. Skontroluj záznam servera.'
+Enabled: '%prefix%&aTvoje akcie vedľajšou rukou sú zapnuté.'
+Disabled: '%prefix%&eTvoje akcie vedľajšou rukou sú vypnuté.'
+StateOn: 'zapnuté'
+StateOff: 'vypnuté'
+Reloaded: '%prefix%&aKonfigurácia a správy boli znovu načítané.'
+ReloadFailed: '%prefix%&cOpätovné načítanie zlyhalo. Predchádzajúce nastavenia zostávajú aktívne; skontroluj záznam servera.'
+Status: '%prefix%&7Verzia &f{version}&7. Nastavenie servera: &f{global}&7.'
+PersonalStatus: '%prefix%&7Tvoje nastavenie vedľajšej ruky: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Zobraziť nastavenia pluginu a osobné nastavenia.
+  %prefix%&6/bdw toggle [on|off] &7- Zmeniť osobné nastavenie.
+  %prefix%&6/bdw integrations &7- Zobraziť integrácie a možnosti klienta.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Znovu načítať konfiguráciu a správy.
+  %prefix%&6/bdw update &7- Skontrolovať nastavený zdroj aktualizácií.
+ServicesStatus: '%prefix%&7Služby: &f{state}'
+UpdateRequest: '%prefix%&7Kontrola aktualizácií: &f{state}'
+UpdateAvailable: '%prefix%&aJe dostupná verzia {version}: &f{url}'
+UpdateCurrent: '%prefix%&aNovšia verzia sa nenašla.'
+UpdateFailed: '%prefix%&cKontrola aktualizácií zlyhala; pozri záznam servera.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'

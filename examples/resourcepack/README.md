@@ -1,5 +1,7 @@
 # Optional invisible placeholder pack
 
+These are historical **version 1.0** input-placeholder packs. Current 1.1 development no longer creates main-hand input feathers. Offhand tools need no pack; the separate [first-person arm pack](../firstperson-arm/README.md) is only for the optional skin arm in an empty offhand.
+
 These examples hide the BeastDoubleWield placeholder item: a **feather with CustomModelData `35021`**. Ordinary feathers keep their normal model. Install the pack matching the **client** version before enabling the optional placeholder feature on the server. The feature requires Minecraft/Bukkit 1.14 or newer; the examples do not extend the plugin's server compatibility claim.
 
 The item has an empty model, so it needs no texture or downloaded artwork. It remains a real item with a model selector and the plugin's private ownership marker. A blank visible name and no lore do not mean the item has no metadata. The pack only reads its model selector; it does not read the ownership marker or create items.

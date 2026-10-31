@@ -35,13 +35,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-/** Maintains an optional disposable main-hand carrier without replacing genuine items. */
+/** Maintains the optional offhand arm and removes obsolete owned input placeholders. */
 public final class PlaceholderService implements Listener, AutoCloseable {
     private final BeastDoubleWieldPlugin plugin;
     private final ArmClientSupport armClients;
     private final Set<UUID> inventoryOpen = new HashSet<>();
     private final Set<UUID> cleanupPending = new HashSet<>();
     private final Map<UUID, Integer> nextProfileAttempt = new HashMap<>();
+    private final Map<UUID, ArmReplacement> replacements = new HashMap<>();
     private SchedulerTask timer;
     private boolean enabled;
     private boolean armEnabled;
@@ -52,10 +53,8 @@ public final class PlaceholderService implements Listener, AutoCloseable {
     public PlaceholderService(BeastDoubleWieldPlugin plugin) { this.plugin = plugin; this.armClients = new ArmClientSupport(plugin); }
 
     public static void validate(ConfigurationSection config) {
-        if (config.contains("placeholder.enabled") && !(config.get("placeholder.enabled") instanceof Boolean))
-            throw new IllegalArgumentException("placeholder.enabled must be true or false");
-        if (config.contains("placeholder.first-person-arm") && !(config.get("placeholder.first-person-arm") instanceof Boolean))
-            throw new IllegalArgumentException("placeholder.first-person-arm must be true or false");
+        if (config.contains("OffhandArm.Enabled") && !(config.get("OffhandArm.Enabled") instanceof Boolean))
+            throw new IllegalArgumentException("OffhandArm.Enabled must be true or false");
     }
 
     /** Reconfiguration is optional and must not invalidate otherwise valid gameplay settings. */
@@ -65,13 +64,21 @@ public final class PlaceholderService implements Listener, AutoCloseable {
         enabled = false;
         armEnabled = false;
         nextProfileAttempt.clear();
+        Set<UUID> activeReplacements = new HashSet<>(replacements.keySet());
+        replacements.clear();
+        inventoryOpen.clear();
         stopTimer();
-        for (Player player : plugin.getServer().getOnlinePlayers()) cleanup(player);
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
+            cleanup(player);
+            if (activeReplacements.contains(player.getUniqueId())
+                    || player.getOpenInventory().getType() != InventoryType.CRAFTING)
+                inventoryOpen.add(player.getUniqueId());
+        }
         cleanupPending.clear();
-        if (!plugin.getConfig().getBoolean("placeholder.enabled", false)) { state = "disabled"; return; }
-        if (!PlaceholderItem.supported()) {
-            state = "unavailable (requires 1.14+)";
-            plugin.getLogger().warning("The optional invisible input placeholder requires Minecraft 1.14 or newer; core gameplay remains enabled.");
+        if (!plugin.getConfig().getBoolean("OffhandArm.Enabled", false)) { state = "disabled"; return; }
+        if (!PlaceholderItem.armSupported(plugin.getServer().getBukkitVersion())) {
+            state = "first-person arm unavailable (requires Paper 26.3/component API)";
+            plugin.getLogger().warning("First-person arms require the verified Paper 26.3 shader/component API path; empty hands remain empty.");
             return;
         }
         try {
@@ -79,52 +86,56 @@ public final class PlaceholderService implements Listener, AutoCloseable {
             SchedulerTask next = plugin.getScheduler().runGlobalRepeating(plugin, () -> {
                 if (generation == token) tick();
             }, 1L, 2L);
-            if (next == null || next.isDone()) throw new IllegalStateException("Placeholder scheduler rejected its task");
+            if (next == null || next.isDone()) throw new IllegalStateException("Offhand arm scheduler rejected its task");
             timer = next;
             enabled = true;
-            state = "enabled (resource pack required)";
-            if (plugin.getConfig().getBoolean("placeholder.first-person-arm", false)) {
-                armEnabled = PlaceholderItem.armSupported(plugin.getServer().getBukkitVersion());
-                state += armEnabled ? ", first-person arm enabled (26.3 shader pack required)"
-                        : ", first-person arm unavailable (requires Paper 26.3/component API)";
-                if (!armEnabled) plugin.getLogger().warning("First-person arms require the verified Paper 26.3 shader/component API path; retaining the invisible input placeholder.");
-            }
-            plugin.getLogger().info("Invisible input placeholder enabled. Install the matching optional pack manually; otherwise its feather is visible.");
+            armEnabled = true;
+            state = "first-person arm enabled (26.3 shader pack required)";
+            plugin.getLogger().info("Optional first-person offhand arm enabled. Install the matching 26.3 pack manually; otherwise its carrier can appear as a player head.");
+            for (Player player : plugin.getServer().getOnlinePlayers()) HandAccess.afterOffhand(player, () -> {
+                if (!closed && generation == token) reconcileSafely(player);
+            });
         } catch (RuntimeException failure) {
             state = "unavailable";
-            plugin.getLogger().log(Level.WARNING, "Could not start optional input placeholders", failure);
+            plugin.getLogger().log(Level.WARNING, "Could not start optional first-person arms", failure);
         }
     }
 
-    public String describe() { return "placeholder=" + state; }
+    public String describe() { return "offhandArm=" + state; }
 
     private void tick() {
         if (!enabled || closed) return;
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             if (cleanupPending.contains(player.getUniqueId())) continue;
-            try { reconcile(player); }
-            catch (RuntimeException failure) {
-                cleanup(player);
-                plugin.getLogger().log(Level.WARNING, "Could not reconcile an input placeholder for " + player.getUniqueId(), failure);
-            }
+            reconcileSafely(player);
+        }
+    }
+
+    private void reconcileSafely(Player player) {
+        try { reconcile(player); }
+        catch (RuntimeException failure) {
+            cleanup(player);
+            plugin.getLogger().log(Level.WARNING, "Could not reconcile a first-person arm for " + player.getUniqueId(), failure);
         }
     }
 
     /** Server thread only. Package visibility keeps inventory-state regression tests direct. */
     void reconcile(Player player) {
-        if (HandAccess.isOffhandAction(player)) return;
+        if (HandAccess.isOffhandAction(player) || replacements.containsKey(player.getUniqueId())) return;
         PlayerInventory inventory = player.getInventory();
-        int selected = inventory.getHeldItemSlot();
-        boolean eligible = eligible(player) && spareStorageSlot(inventory, selected);
+        boolean eligible = eligible(player) && spareStorageSlot(inventory);
         boolean keepArm = eligible && armEnabled && armClients.allowed(player);
         for (int slot = 0; slot < inventory.getSize(); slot++) {
             ItemStack item = inventory.getItem(slot);
-            boolean validSlot = PlaceholderItem.isArm(item) ? keepArm && slot == 40 : eligible && slot == selected;
+            boolean validSlot = PlaceholderItem.isArm(item) && keepArm && slot == 40;
             if (PlaceholderItem.isOwned(item) && (!validSlot || item.getAmount() != 1))
                 inventory.setItem(slot, null);
         }
         if (PlaceholderItem.isOwned(player.getItemOnCursor())) player.setItemOnCursor(null);
-        if (keepArm && empty(player.getItemOnCursor()) && empty(inventory.getItemInOffHand())) {
+        if (keepArm && !inventoryOpen.contains(player.getUniqueId())
+                && !cleanupPending.contains(player.getUniqueId())
+                && player.getOpenInventory().getType() == InventoryType.CRAFTING
+                && empty(player.getItemOnCursor()) && empty(inventory.getItemInOffHand())) {
             int now = player.getTicksLived();
             Integer next = nextProfileAttempt.get(player.getUniqueId());
             if (next == null || now >= next) {
@@ -133,31 +144,26 @@ public final class PlaceholderService implements Listener, AutoCloseable {
                 else nextProfileAttempt.put(player.getUniqueId(), now + 100);
             }
         }
-        // The offhand carrier already generates air-use input. Keep the actual main hand
-        // empty so vanilla continues to draw its normal first-person arm.
-        if (PlaceholderItem.isArm(inventory.getItemInOffHand())) {
-            if (PlaceholderItem.isOwned(inventory.getItem(selected))) inventory.setItem(selected, null);
-        } else if (eligible && empty(player.getItemOnCursor()) && empty(inventory.getItem(selected))) {
-            inventory.setItem(selected, PlaceholderItem.create());
-        }
+        // Never fill the main hand. Real offhand items and the optional arm already
+        // provide air-use input; unsupported or missing arms leave both hands empty.
     }
 
     private boolean eligible(Player player) {
         if (!enabled || closed || !player.isOnline() || player.isDead() || !plugin.isEnabled(player)
-                || !player.hasPermission("beastdoublewield.attack") || inventoryOpen.contains(player.getUniqueId())
-                || player.getOpenInventory().getType() != InventoryType.CRAFTING
-                || plugin.getConfig().getStringList("disabled-worlds").contains(player.getWorld().getName())) return false;
+                || !player.hasPermission("beastdoublewield.attack")
+                || plugin.getConfig().getStringList("DisabledWorlds").contains(player.getWorld().getName())) return false;
         if (player.getGameMode() != GameMode.SURVIVAL && player.getGameMode() != GameMode.ADVENTURE) return false;
-        ConfigurationSection attack = plugin.getConfig().getConfigurationSection("attack");
-        return plugin.getConfig().getBoolean("swing.air", false) && attack != null
-                && attack.getBoolean("allow-empty-hand", false)
+        ConfigurationSection attack = plugin.getConfig().getConfigurationSection("Attack");
+        return plugin.getConfig().getBoolean("Swing.Air", false) && attack != null
+                && attack.getBoolean("AllowEmptyHand", false)
                 && ItemRules.canUse(player, player.getInventory().getItemInOffHand(), attack);
     }
 
-    // Never consume the last genuinely free storage slot: real pickups must still fit.
-    private static boolean spareStorageSlot(PlayerInventory inventory, int selected) {
-        for (int slot = 0; slot < 36; slot++) if (slot != selected
-                && (empty(inventory.getItem(slot)) || PlaceholderItem.isOwned(inventory.getItem(slot)))) return true;
+    // The arm occupies only the offhand; every free storage slot, selected or not,
+    // remains available for real pickups.
+    private static boolean spareStorageSlot(PlayerInventory inventory) {
+        for (int slot = 0; slot < 36; slot++)
+            if (empty(inventory.getItem(slot)) || PlaceholderItem.isOwned(inventory.getItem(slot))) return true;
         return false;
     }
 
@@ -167,6 +173,7 @@ public final class PlaceholderService implements Listener, AutoCloseable {
 
     /** Also used after a successful personal toggle and to remove stale items after a crash. */
     public void cleanup(Player player) {
+        replacements.remove(player.getUniqueId());
         HandAccess.afterOffhand(player, () -> {
             try {
                 PlayerInventory inventory = player.getInventory();
@@ -177,11 +184,6 @@ public final class PlaceholderService implements Listener, AutoCloseable {
                 plugin.getLogger().log(Level.WARNING, "Could not remove an owned input placeholder for " + player.getUniqueId(), failure);
             }
         });
-    }
-
-    private void suspendInventory(Player player) {
-        inventoryOpen.add(player.getUniqueId());
-        queueCleanup(player);
     }
 
     private void queueCleanup(Player player) {
@@ -213,7 +215,9 @@ public final class PlaceholderService implements Listener, AutoCloseable {
         if (event.getPlayer() instanceof Player) {
             Player player = (Player) event.getPlayer();
             inventoryOpen.add(player.getUniqueId());
-            cleanup(player);
+            // A valid offhand arm is independent of the open view. Only an actual
+            // leaked carrier in that view needs cleanup, after the open event.
+            if (containsOwned(event.getInventory())) queueCleanup(player);
         }
     }
 
@@ -226,24 +230,140 @@ public final class PlaceholderService implements Listener, AutoCloseable {
     public void click(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) return;
         Player player = (Player) event.getWhoClicked();
-        suspendInventory(player);
+        // Personal inventory opening has no normal InventoryOpenEvent. A click
+        // pauses insertion until close, but must not remove an existing arm.
+        inventoryOpen.add(player.getUniqueId());
         boolean ownedHotbar = event.getHotbarButton() >= 0
                 && PlaceholderItem.isOwned(player.getInventory().getItem(event.getHotbarButton()));
         boolean ownedSwap = "SWAP_OFFHAND".equals(event.getClick().name())
                 && PlaceholderItem.isOwned(player.getInventory().getItemInOffHand());
+        ItemStack arm = player.getInventory().getItemInOffHand();
+        boolean validArm = PlaceholderItem.isArm(arm) && arm.getAmount() == 1
+                && armEnabled && eligible(player) && spareStorageSlot(player.getInventory())
+                && armClients.allowed(player) && !HandAccess.isOffhandAction(player);
+        boolean ownSlot = player.getInventory().equals(event.getClickedInventory()) && event.getSlot() == 40;
+        if (validArm && !PlaceholderItem.isOwned(event.getCursor()) && !ownedHotbar) {
+            boolean replacement = false;
+            if (ownSlot && PlaceholderItem.isArm(event.getCurrentItem())) {
+                if (event.getClick() == ClickType.LEFT || event.getClick() == ClickType.RIGHT)
+                    replacement = genuine(event.getCursor());
+                else if (event.getClick() == ClickType.NUMBER_KEY && event.getHotbarButton() >= 0 && event.getHotbarButton() < 9)
+                    replacement = genuine(player.getInventory().getItem(event.getHotbarButton()));
+                if (!replacement) { event.setCancelled(true); return; }
+            } else if (ownedSwap && !PlaceholderItem.isOwned(event.getCurrentItem())) {
+                replacement = event.getRawSlot() >= 0 && !ownSlot && genuine(event.getCurrentItem());
+                if (!replacement) { event.setCancelled(true); return; }
+            } else replacement = shiftIntoOwnedOffhand(event, player);
+            if (replacement) {
+                // Native click handling re-reads the slot after all listeners. Only
+                // mask our disposable item; native code moves the real stack/cursor.
+                if (!event.isCancelled()) beginReplacement(player, event, arm);
+                return;
+            }
+        }
         if (PlaceholderItem.isOwned(event.getCurrentItem()) || PlaceholderItem.isOwned(event.getCursor()) || ownedHotbar || ownedSwap
-                || (event instanceof CraftItemEvent && containsOwned(event.getInventory())))
+                || shiftIntoOwnedOffhand(event, player)
+                || (event instanceof CraftItemEvent && containsOwned(event.getInventory()))) {
             event.setCancelled(true);
+            queueCleanup(player);
+        }
+    }
+
+    private static boolean shiftIntoOwnedOffhand(InventoryClickEvent event, Player player) {
+        // Native personal-inventory quick-move autoequips offhand equipment only
+        // from storage/hotbar; container, crafting and armor sources differ.
+        return event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY
+                && event.getView().getType() == InventoryType.CRAFTING
+                && event.getRawSlot() >= 9 && event.getRawSlot() <= 44
+                && PlaceholderItem.isArm(player.getInventory().getItemInOffHand())
+                && PlaceholderItem.isOffhandEquipment(event.getCurrentItem());
+    }
+
+    private static boolean genuine(ItemStack item) {
+        return !empty(item) && !PlaceholderItem.isOwned(item);
+    }
+
+    private void beginReplacement(Player player, InventoryClickEvent event, ItemStack arm) {
+        UUID id = player.getUniqueId();
+        if (closed || cleanupPending.contains(id) || replacements.containsKey(id)) {
+            event.setCancelled(true); return;
+        }
+        ArmReplacement replacement = new ArmReplacement(event, arm, generation);
+        replacements.put(id, replacement);
+        SchedulerTask task = null;
+        try {
+            task = plugin.getScheduler().runPlayerDelayed(plugin, player, () ->
+                    HandAccess.afterOffhand(player, () -> finishReplacement(player, replacement)), 1L,
+                    () -> { if (replacements.get(id) == replacement) replacements.remove(id); });
+            if (task == null || task.isDone() || replacements.get(id) != replacement)
+                throw new IllegalStateException("Arm replacement recovery task was rejected");
+            player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+        } catch (RuntimeException failure) {
+            event.setCancelled(true);
+            restoreReplacement(player, replacement);
+            if (replacements.get(id) == replacement) replacements.remove(id);
+            if (task != null) try { task.cancel(); } catch (RuntimeException ignored) { }
+            plugin.getLogger().log(Level.WARNING, "Could not prepare a native offhand item replacement", failure);
+        }
+    }
+
+    /** Restore before a denied native click is resynchronized; later denials use the task. */
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void finishClick(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player) || !event.isCancelled()) return;
+        Player player = (Player) event.getWhoClicked();
+        ArmReplacement replacement = replacements.get(player.getUniqueId());
+        if (replacement != null && replacement.event == event)
+            HandAccess.afterOffhand(player, () -> restoreReplacement(player, replacement));
+    }
+
+    private void restoreReplacement(Player player, ArmReplacement replacement) {
+        if (replacements.get(player.getUniqueId()) != replacement || generation != replacement.generation
+                || closed || !armEnabled || cleanupPending.contains(player.getUniqueId())) return;
+        try {
+            if (PlaceholderItem.isArm(replacement.arm) && replacement.arm.getAmount() == 1
+                    && empty(player.getInventory().getItemInOffHand()) && eligible(player)
+                    && spareStorageSlot(player.getInventory()) && armClients.allowed(player))
+                player.getInventory().setItemInOffHand(replacement.arm);
+        } catch (RuntimeException failure) {
+            plugin.getLogger().log(Level.WARNING, "Could not restore an optional offhand arm", failure);
+        }
+    }
+
+    private void finishReplacement(Player player, ArmReplacement replacement) {
+        UUID id = player.getUniqueId();
+        if (replacements.get(id) != replacement) return;
+        restoreReplacement(player, replacement);
+        if (replacements.get(id) != replacement) return;
+        replacements.remove(id);
+        if (!closed && generation == replacement.generation && player.isOnline()) {
+            // If a later listener changed cancellation again, remove any stray
+            // carrier from the original view; genuine items are never touched.
+            clearOwned(replacement.event.getView().getTopInventory());
+            if (!cleanupPending.contains(id)) reconcileSafely(player);
+        }
+    }
+
+    private static final class ArmReplacement {
+        private final InventoryClickEvent event;
+        private final ItemStack arm;
+        private final long generation;
+        private ArmReplacement(InventoryClickEvent event, ItemStack arm, long generation) {
+            this.event = event; this.arm = arm; this.generation = generation;
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void drag(InventoryDragEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) return;
-        suspendInventory((Player) event.getWhoClicked());
+        Player player = (Player) event.getWhoClicked();
+        inventoryOpen.add(player.getUniqueId());
         if (PlaceholderItem.isOwned(event.getOldCursor())
                 || event.getNewItems().values().stream().anyMatch(PlaceholderItem::isOwned)
-                || event.getRawSlots().stream().anyMatch(slot -> PlaceholderItem.isOwned(event.getView().getItem(slot))))
+                || event.getRawSlots().stream().anyMatch(slot -> PlaceholderItem.isOwned(event.getView().getItem(slot)))) {
             event.setCancelled(true);
+            queueCleanup(player);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -298,7 +418,11 @@ public final class PlaceholderService implements Listener, AutoCloseable {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void drop(PlayerDropItemEvent event) {
-        if (PlaceholderItem.isOwned(event.getItemDrop().getItemStack())) event.setCancelled(true);
+        // Normal drops do not move the offhand arm. Let the regular reconciliation
+        // inspect the inventory after vanilla finishes the drop or cancellation.
+        if (!PlaceholderItem.isOwned(event.getItemDrop().getItemStack())) return;
+        event.setCancelled(true);
+        // Vanilla may restore a cancelled owned drop into an inventory slot.
         queueCleanup(event.getPlayer());
     }
 
@@ -306,8 +430,8 @@ public final class PlaceholderService implements Listener, AutoCloseable {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void pickup(PlayerPickupItemEvent event) {
         if (PlaceholderItem.isOwned(event.getItem().getItemStack())) { event.setCancelled(true); event.getItem().remove(); }
-        else cleanup(event.getPlayer());
-        queueCleanup(event.getPlayer());
+        // Only the stray entity needs removal. Ordinary pickups and existing valid
+        // arms require no inventory writes; the regular tick rechecks free storage.
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -330,6 +454,7 @@ public final class PlaceholderService implements Listener, AutoCloseable {
     }
 
     private static boolean containsOwned(Inventory inventory) {
+        if (inventory == null) return false;
         for (ItemStack item : inventory.getContents()) if (PlaceholderItem.isOwned(item)) return true;
         return false;
     }
@@ -354,7 +479,14 @@ public final class PlaceholderService implements Listener, AutoCloseable {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void held(PlayerItemHeldEvent event) { cleanup(event.getPlayer()); }
+    public void held(PlayerItemHeldEvent event) {
+        Player player = event.getPlayer();
+        // A hotbar change does not move the offhand. Revalidate without deleting a
+        // valid arm, and wait for native hand restoration if a listener changes slots.
+        HandAccess.afterOffhand(player, () -> {
+            if (!cleanupPending.contains(player.getUniqueId())) reconcileSafely(player);
+        });
+    }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void gameMode(PlayerGameModeChangeEvent event) { cleanup(event.getPlayer()); }
@@ -371,7 +503,7 @@ public final class PlaceholderService implements Listener, AutoCloseable {
         closed = true; enabled = false; state = "stopped";
         stopTimer();
         for (Player player : plugin.getServer().getOnlinePlayers()) cleanup(player);
-        inventoryOpen.clear(); cleanupPending.clear();
+        inventoryOpen.clear(); cleanupPending.clear(); replacements.clear();
         nextProfileAttempt.clear();
     }
 

@@ -74,6 +74,10 @@ public final class ServerAccess {
     public static void hitSound(Player player, Block block) {
         if (SOUND) Modern.hitSound(player, block); else LegacyNative.hitSound(player, block);
     }
+    /** Capture before destruction, then play only to the actor after a successful native break. */
+    public static Runnable prepareBreakSound(Player player, Block block) {
+        return SOUND ? Modern.prepareBreakSound(player, block) : LegacyNative.prepareBreakSound(player, block);
+    }
     @SuppressWarnings("deprecation")
     public static String blockKey(Block block) {
         return DATA ? Modern.blockKey(block) : block.getType().name() + ":" + block.getData();
@@ -181,6 +185,14 @@ public final class ServerAccess {
         static void hitSound(Player player, Block block) {
             org.bukkit.SoundGroup group = block.getBlockData().getSoundGroup();
             player.playSound(block.getLocation(), group.getHitSound(), group.getVolume() * 0.25F, group.getPitch());
+        }
+        static Runnable prepareBreakSound(Player player, Block block) {
+            org.bukkit.SoundGroup group = block.getBlockData().getSoundGroup();
+            org.bukkit.Sound sound = group.getBreakSound();
+            Location location = block.getLocation().add(0.5, 0.5, 0.5);
+            float volume = (group.getVolume() + 1.0F) / 2.0F;
+            float pitch = group.getPitch() * 0.8F;
+            return () -> player.playSound(location, sound, org.bukkit.SoundCategory.BLOCKS, volume, pitch);
         }
         static Block targetBlock(Player player, double reach) {
             org.bukkit.util.RayTraceResult result = player.rayTraceBlocks(reach, org.bukkit.FluidCollisionMode.NEVER);

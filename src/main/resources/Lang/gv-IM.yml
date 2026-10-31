@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cCha nel kied ayd shen y yannoo.'
+PlayerOnly: '%prefix%&cTa''n sarey shoh ry-gheddyn da cloiederyn.'
+PreferenceFailed: '%prefix%&cCha dodmayd dty reih y hauail. Scrutee recortys y reireyder.'
+Enabled: '%prefix%&aTa jannooyn dty nah laue foaddit.'
+Disabled: '%prefix%&eTa jannooyn dty nah laue mooghit.'
+Reloaded: '%prefix%&aTa''n reaghey as ny chaghteraghtyn aalughtit.'
+ReloadFailed: '%prefix%&cCha row yn aalughtaghey rahoil. Ta ny soiaghyn roish shoh foast ayns bree; scrutee recortys y reireyder.'
+Status: '%prefix%&7Lhieggan &f{version}&7. Soiaghey y reireyder: &f{global}&7.'
+PersonalStatus: '%prefix%&7Dty hoiaghey son y nah laue: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Jeeagh er soiaghyn yn dhullag as dty hoiaghyn persoonagh.
+  %prefix%&6/bdw toggle [on|off] &7- Caghlaa dty hoiaghey persoonagh.
+  %prefix%&6/bdw integrations &7- Jeeagh er ablid y cho-hymey as y chliant.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Aalughtee yn reaghey as ny chaghteraghtyn.
+  %prefix%&6/bdw update &7- Scrutee yn bun reiht son lhiegganyn.
+ServicesStatus: '%prefix%&7Shirveishyn: &f{state}'
+UpdateRequest: '%prefix%&7Scrutaghey son lhiegganyn noa: &f{state}'
+UpdateAvailable: '%prefix%&aTa lhieggan {version} ry-gheddyn: &f{url}'
+UpdateCurrent: '%prefix%&aCha row lhieggan s''noa er ny gheddyn.'
+UpdateFailed: '%prefix%&cCha row yn scrutaghey son lhiegganyn noa rahoil; jeeagh er recortys y reireyder.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'foaddit'
+StateOff: 'mooghit'

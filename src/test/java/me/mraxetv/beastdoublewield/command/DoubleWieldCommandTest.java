@@ -103,4 +103,17 @@ class DoubleWieldCommandTest {
         verify(plugin).message(sender, "ServicesStatus", "state", "updates=not configured, custom metrics=disabled");
         verify(plugin).message(sender, "ServicesStatus", "state", "bStats=initialized (ID 35021; opt-out: plugins/bStats/config.yml)");
     }
+
+    @Test void statusUsesTranslatedGlobalAndPersonalStateLabels() {
+        Player player = mock(Player.class);
+        when(player.hasPermission("beastdoublewield.use")).thenReturn(true);
+        when(plugin.getDescription()).thenReturn(new PluginDescriptionFile("BeastDoubleWield", "1.1-SNAPSHOT", "unused.Main"));
+        when(plugin.getConfig()).thenReturn(new YamlConfiguration());
+        when(plugin.isPersonallyEnabled(player)).thenReturn(false);
+        when(plugin.stateName(true)).thenReturn("uključeno");
+        when(plugin.stateName(false)).thenReturn("isključeno");
+        command.onCommand(player, bukkitCommand, "bdw", new String[]{"status"});
+        verify(plugin).message(player, "Status", "version", "1.1-SNAPSHOT", "global", "uključeno");
+        verify(plugin).message(player, "PersonalStatus", "state", "isključeno");
+    }
 }

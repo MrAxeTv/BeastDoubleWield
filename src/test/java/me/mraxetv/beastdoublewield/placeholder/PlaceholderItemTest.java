@@ -3,6 +3,7 @@ package me.mraxetv.beastdoublewield.placeholder;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -76,6 +77,9 @@ class PlaceholderItemTest {
         assertFalse(PlaceholderItem.armVersion("26.30-R0.1-SNAPSHOT"));
         assertFalse(PlaceholderItem.armVersion("26.3.build.bad"));
         assertFalse(PlaceholderItem.armVersion("26.2-R0.1-SNAPSHOT"));
+        assertFalse(PlaceholderItem.armVersion("26.4-R0.1-SNAPSHOT"));
+        assertFalse(PlaceholderItem.armVersion("26.3.1-R0.1-SNAPSHOT"));
+        assertFalse(PlaceholderItem.armVersion("27.1"));
         assertFalse(PlaceholderItem.armVersion("1.20.2-R0.1-SNAPSHOT"));
         assertFalse(PlaceholderItem.armVersion(null));
     }
@@ -111,5 +115,61 @@ class PlaceholderItemTest {
         assertNull(PlaceholderItem.createArm(player));
         verify(source, never()).update();
         verify(source, never()).clone();
+    }
+
+    @Test void unavailableEquipmentApiUsesOnlyMaterialDefaults() {
+        assertTrue(PlaceholderItem.isOffhandEquipment(new ItemStack(Material.SHIELD)));
+        assertFalse(PlaceholderItem.isOffhandEquipment(new ItemStack(Material.DIAMOND_SWORD)));
+        assertFalse(PlaceholderItem.isOffhandEquipment(new ItemStack(Material.FEATHER)));
+        assertFalse(PlaceholderItem.isOffhandEquipment(new ItemStack(Material.AIR)));
+        assertFalse(PlaceholderItem.isOffhandEquipment(new ItemStack(Material.SHIELD, 0)));
+        assertFalse(PlaceholderItem.isOffhandEquipment(null));
+    }
+
+    @Test void effectiveEquipmentComponentOverridesMaterialDefault() throws Exception {
+        PlaceholderItem.EquipmentLookup lookup = equipmentLookup();
+        assertTrue(lookup.isOffhand(new ComponentItem(Material.DIAMOND, EquipmentSlot.OFF_HAND)));
+        assertTrue(lookup.isOffhand(new ComponentItem(Material.SHIELD, EquipmentSlot.OFF_HAND)));
+        assertFalse(lookup.isOffhand(new ComponentItem(Material.SHIELD, EquipmentSlot.HEAD)));
+        assertFalse(lookup.isOffhand(new ComponentItem(Material.SHIELD, EquipmentSlot.HAND)));
+    }
+
+    @Test void explicitlyRemovedEquippableNeverFallsBackToShieldDefault() throws Exception {
+        assertFalse(equipmentLookup().isOffhand(new ComponentItem(Material.SHIELD, null)));
+    }
+
+    @Test void failedEffectiveEquipmentQueryCannotClearAnArmUsingMaterialFallback() throws Exception {
+        ComponentItem broken = new ComponentItem(Material.SHIELD, EquipmentSlot.OFF_HAND);
+        broken.fail = true;
+        assertFalse(equipmentLookup().isOffhand(broken));
+    }
+
+    private static PlaceholderItem.EquipmentLookup equipmentLookup() throws Exception {
+        // Model the optional public API signature without adding Paper classes to
+        // the Spigot baseline test classpath or replacing the production cache.
+        return new PlaceholderItem.EquipmentLookup("equippable",
+                ComponentItem.class.getMethod("getData", Object.class),
+                EquipmentComponent.class.getMethod("slot"),
+                Material.class.getMethod("getEquipmentSlot"));
+    }
+
+    public static final class ComponentItem extends ItemStack {
+        private final EquipmentComponent component;
+        private boolean fail;
+        ComponentItem(Material type, EquipmentSlot slot) {
+            super(type);
+            component = slot == null ? null : new EquipmentComponent(slot);
+        }
+        public Object getData(Object type) {
+            if (fail) throw new IllegalStateException("Component query failed");
+            assertEquals("equippable", type);
+            return component;
+        }
+    }
+
+    public static final class EquipmentComponent {
+        private final EquipmentSlot slot;
+        EquipmentComponent(EquipmentSlot slot) { this.slot = slot; }
+        public EquipmentSlot slot() { return slot; }
     }
 }

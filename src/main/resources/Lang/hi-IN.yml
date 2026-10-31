@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cआपको ऐसा करने की अनुमति नहीं है।'
+PlayerOnly: '%prefix%&cयह कमांड खिलाड़ियों के लिए उपलब्ध है।'
+PreferenceFailed: '%prefix%&cआपकी पसंद सहेजी नहीं जा सकी। सर्वर का लॉग देखें।'
+Enabled: '%prefix%&aआपके दूसरे हाथ की क्रियाएँ चालू हैं।'
+Disabled: '%prefix%&eआपके दूसरे हाथ की क्रियाएँ बंद हैं।'
+Reloaded: '%prefix%&aकॉन्फ़िगरेशन और संदेश फिर से लोड कर दिए गए हैं।'
+ReloadFailed: '%prefix%&cफिर से लोड करना विफल रहा। आपकी पिछली सेटिंग अभी भी लागू हैं; सर्वर का लॉग देखें।'
+Status: '%prefix%&7संस्करण &f{version}&7। सर्वर की सेटिंग: &f{global}&7।'
+PersonalStatus: '%prefix%&7आपके दूसरे हाथ की सेटिंग: &f{state}&7।'
+Help: |-
+  %prefix%&6/bdw status &7- प्लगइन और अपनी निजी सेटिंग देखें।
+  %prefix%&6/bdw toggle [on|off] &7- अपनी निजी सेटिंग बदलें।
+  %prefix%&6/bdw integrations &7- एकीकरण और क्लाइंट की क्षमताएँ देखें।
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- कॉन्फ़िगरेशन और संदेश फिर से लोड करें।
+  %prefix%&6/bdw update &7- सेट किए गए संस्करण स्रोत की जाँच करें।
+ServicesStatus: '%prefix%&7सेवाएँ: &f{state}'
+UpdateRequest: '%prefix%&7अपडेट की जाँच: &f{state}'
+UpdateAvailable: '%prefix%&aसंस्करण {version} उपलब्ध है: &f{url}'
+UpdateCurrent: '%prefix%&aकोई नया संस्करण नहीं मिला।'
+UpdateFailed: '%prefix%&cअपडेट की जाँच विफल रही; सर्वर का लॉग देखें।'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'चालू'
+StateOff: 'बंद'

@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cEhhez nincs jogosultságod.'
+PlayerOnly: '%prefix%&cEz a parancs játékosok számára érhető el.'
+PreferenceFailed: '%prefix%&cNem sikerült menteni a beállításodat. Ellenőrizd a szerver naplóját.'
+Enabled: '%prefix%&aA mellékkezed műveletei be vannak kapcsolva.'
+Disabled: '%prefix%&eA mellékkezed műveletei ki vannak kapcsolva.'
+Reloaded: '%prefix%&aA konfiguráció és az üzenetek újra betöltve.'
+ReloadFailed: '%prefix%&cAz újratöltés sikertelen. A korábbi beállításaid maradnak érvényben; ellenőrizd a szerver naplóját.'
+Status: '%prefix%&7Verzió: &f{version}&7. Szerverbeállítás: &f{global}&7.'
+PersonalStatus: '%prefix%&7A mellékkezed beállítása: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- A bővítmény és a személyes beállítások megtekintése.
+  %prefix%&6/bdw toggle [on|off] &7- A személyes beállításod módosítása.
+  %prefix%&6/bdw integrations &7- Az integrációk és a kliens képességeinek megtekintése.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- A konfiguráció és az üzenetek újratöltése.
+  %prefix%&6/bdw update &7- A beállított kiadási forrás ellenőrzése.
+ServicesStatus: '%prefix%&7Szolgáltatások: &f{state}'
+UpdateRequest: '%prefix%&7Frissítéskeresés: &f{state}'
+UpdateAvailable: '%prefix%&aElérhető a(z) {version} verzió: &f{url}'
+UpdateCurrent: '%prefix%&aNem található újabb kiadás.'
+UpdateFailed: '%prefix%&cA frissítéskeresés sikertelen; nézd meg a szerver naplóját.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'bekapcsolva'
+StateOff: 'kikapcsolva'

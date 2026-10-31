@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cNemate dopuštenje za to.'
+PlayerOnly: '%prefix%&cOva naredba dostupna je igračima.'
+PreferenceFailed: '%prefix%&cVaša se postavka nije mogla spremiti. Provjerite zapisnik poslužitelja.'
+Enabled: '%prefix%&aRadnje vašom sporednom rukom su uključene.'
+Disabled: '%prefix%&eRadnje vašom sporednom rukom su isključene.'
+Reloaded: '%prefix%&aKonfiguracija i poruke ponovno su učitane.'
+ReloadFailed: '%prefix%&cPonovno učitavanje nije uspjelo. Vaše prethodne postavke ostaju aktivne; provjerite zapisnik poslužitelja.'
+Status: '%prefix%&7Verzija &f{version}&7. Postavka poslužitelja: &f{global}&7.'
+PersonalStatus: '%prefix%&7Vaša postavka sporedne ruke: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Prikaži postavke dodatka i osobne postavke.
+  %prefix%&6/bdw toggle [on|off] &7- Promijeni svoju osobnu postavku.
+  %prefix%&6/bdw integrations &7- Prikaži mogućnosti integracija i klijenta.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Ponovno učitaj konfiguraciju i poruke.
+  %prefix%&6/bdw update &7- Provjeri postavljeni izvor izdanja.
+ServicesStatus: '%prefix%&7Usluge: &f{state}'
+UpdateRequest: '%prefix%&7Provjera ažuriranja: &f{state}'
+UpdateAvailable: '%prefix%&aDostupna je verzija {version}: &f{url}'
+UpdateCurrent: '%prefix%&aNije pronađeno novije izdanje.'
+UpdateFailed: '%prefix%&cProvjera ažuriranja nije uspjela; pogledajte zapisnik poslužitelja.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'uključeno'
+StateOff: 'isključeno'

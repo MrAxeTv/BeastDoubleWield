@@ -1,0 +1,9 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "minecraft:gui/sprites/container/slot/shield",
+      "sprite": "beastdoublewield:item/empty_offhand"
+    }
+  ]
+}

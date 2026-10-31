@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cNu ai permisiunea de a face acest lucru.'
+PlayerOnly: '%prefix%&cAceastă comandă poate fi folosită doar de jucători.'
+PreferenceFailed: '%prefix%&cPreferința ta nu a putut fi salvată. Verifică jurnalul serverului.'
+Enabled: '%prefix%&aAcțiunile tale cu mâna secundară sunt activate.'
+Disabled: '%prefix%&eAcțiunile tale cu mâna secundară sunt dezactivate.'
+StateOn: 'activată'
+StateOff: 'dezactivată'
+Reloaded: '%prefix%&aConfigurația și mesajele au fost reîncărcate.'
+ReloadFailed: '%prefix%&cReîncărcarea a eșuat. Setările anterioare rămân active; verifică jurnalul serverului.'
+Status: '%prefix%&7Versiunea &f{version}&7. Setarea serverului: &f{global}&7.'
+PersonalStatus: '%prefix%&7Setarea ta pentru mâna secundară: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Vezi setările pluginului și setările personale.
+  %prefix%&6/bdw toggle [on|off] &7- Schimbă setarea personală.
+  %prefix%&6/bdw integrations &7- Vezi integrările și funcțiile clientului.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Reîncarcă configurația și mesajele.
+  %prefix%&6/bdw update &7- Verifică sursa de actualizări configurată.
+ServicesStatus: '%prefix%&7Servicii: &f{state}'
+UpdateRequest: '%prefix%&7Verificarea actualizărilor: &f{state}'
+UpdateAvailable: '%prefix%&aVersiunea {version} este disponibilă: &f{url}'
+UpdateCurrent: '%prefix%&aNu a fost găsită o versiune mai nouă.'
+UpdateFailed: '%prefix%&cVerificarea actualizărilor a eșuat; consultă jurnalul serverului.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'

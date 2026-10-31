@@ -1,0 +1,82 @@
+{
+    "schemaVersion":  2,
+    "verifiedAtUtc":  "2026-10-30T22:58:29.3852146Z",
+    "minecraftClient":  "26.3",
+    "artifact":  "BeastDoubleWield-firstperson-arm-26.3.zip",
+    "zipSha256":  "b18c8699225424aca7e4c5cd2e4a4b1376056fcc1e5c2347850afc5b22da5f63",
+    "normalizedSourceSha256":  {
+                                   "assets/beastdoublewield/models/item/firstperson_arm.json":  "04f2e99f750acb930bf4d0c38acedd16cbec308b8901fbe0db248c0afaa1fcef",
+                                   "assets/beastdoublewield/shaders/include/firstperson_arm.glsl":  "f1326526ff7e46ab61b2f5a0360f6a9892405b1ae3914e845c209162fd3dd9a4",
+                                   "assets/minecraft/items/feather.json":  "500bd5bf61b2c4fbaf8cf54eea086768f1d7751c0651bb9647e8d0bdc01765cf",
+                                   "assets/minecraft/items/player_head.json":  "bdd34ae7118167377340f39c18f3b79a890dbda0a4e77a9dbc9e0c9cbc77e419",
+                                   "assets/minecraft/shaders/core/entity.fsh":  "39921812a8b6427de38689a96e120bd9bfde4c84171286f95fbe855c0c748d7a",
+                                   "assets/minecraft/shaders/core/entity.vsh":  "27886dac1c2c6d513b47fed6650618a8c5d1ee8ad2c9ca550b48b60079a1f44c",
+                                   "pack.mcmeta":  "f15cfdb1be4ad09728db4c3cf289e33c6a17b6947cfaf8be775486f9c71b6e8f"
+                               },
+    "gpu":  "NVIDIA GeForce RTX 5080/PCIe/SSE2",
+    "validation":  {
+                       "nativeClientItemCodec":  true,
+                       "nativeSkullAndPlayerMeshes":  true,
+                       "nativeHeldItemSwingHelpers":  true,
+                       "shaderVariantsCompiledAndLinked":  11,
+                       "negativeControls":  [
+                                                "ordinary head",
+                                                "unmarked stretched head",
+                                                "wide player",
+                                                "slim player",
+                                                "marked head under orthographic projection"
+                                            ],
+                       "negativeControlsBitIdentical":  true,
+                       "foregroundDepthOcclusion":  true,
+                       "liveGame":  false,
+                       "worldOitCompositionRendered":  false,
+                       "performanceBenchmarked":  false,
+                       "fixedFovDegrees":  70,
+                       "nativeRestingPose":  "Actual renderPlayerArm plus native PlayerModel arm/sleeve and AvatarRenderer resting roll; reference applies the private size signature about the native arm center without item JSON transforms",
+                       "shaderBytesUnchanged":  true
+                   },
+    "runs":  [
+                 {
+                     "width":  1920,
+                     "height":  1080,
+                     "checks":  222,
+                     "scenarios":  40,
+                     "maxPixelDifferences":  2,
+                     "totalPixelDifferences":  13,
+                     "interiorPixelDifferences":  0,
+                     "nativeRestScenarios":  8,
+                     "nativeRestMaxPixelDifferences":  3,
+                     "nativeRestTotalPixelDifferences":  7,
+                     "nativeRestInteriorPixelDifferences":  0
+                 },
+                 {
+                     "width":  3840,
+                     "height":  2160,
+                     "checks":  222,
+                     "scenarios":  40,
+                     "maxPixelDifferences":  6,
+                     "totalPixelDifferences":  40,
+                     "interiorPixelDifferences":  0,
+                     "nativeRestScenarios":  8,
+                     "nativeRestMaxPixelDifferences":  13,
+                     "nativeRestTotalPixelDifferences":  33,
+                     "nativeRestInteriorPixelDifferences":  0
+                 }
+             ],
+    "limitations":  [
+                        "Finite native mesh and hidden GPU fixture; no client resource-pack load or live gameplay test.",
+                        "Residual pixel differences occur only adjacent to a reference texture or geometry boundary.",
+                        "One local NVIDIA GPU; other GPUs, Minecraft versions, graphics mods and other shader packs were not validated.",
+                        "OIT phases compile and link; the full world transparency composition pass is not reproduced.",
+                        "Resting orientation/position match the native empty arm with the documented size signature; animated carriers retain held-item swings, not identical empty-arm swings."
+                    ],
+    "originalPoseRegression":  {
+                                   "zipSha256":  "aad341eaee2215902f7a92593f49927627f7fae1c8e6de382b66565c2c7de24f",
+                                   "width":  1920,
+                                   "height":  1080,
+                                   "scenario":  "wide-right-skin-native-rest",
+                                   "pixelDifferences":  79458,
+                                   "interiorPixelDifferences":  75910,
+                                   "rejectedByIndependentNativeRestCheck":  true
+                               }
+}

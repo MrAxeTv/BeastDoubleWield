@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cНямате право да правите това.'
+PlayerOnly: '%prefix%&cТази команда е достъпна за играчи.'
+PreferenceFailed: '%prefix%&cПредпочитанието ви не можа да бъде запазено. Проверете журнала на сървъра.'
+Enabled: '%prefix%&aДействията с второстепенната ви ръка са включени.'
+Disabled: '%prefix%&eДействията с второстепенната ви ръка са изключени.'
+Reloaded: '%prefix%&aНастройките и съобщенията са презаредени.'
+ReloadFailed: '%prefix%&cПрезареждането е неуспешно. Предишните ви настройки остават активни; проверете журнала на сървъра.'
+Status: '%prefix%&7Версия &f{version}&7. Настройка на сървъра: &f{global}&7.'
+PersonalStatus: '%prefix%&7Вашата настройка за второстепенната ръка: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Показва настройките на добавката и личните настройки.
+  %prefix%&6/bdw toggle [on|off] &7- Променя личната ви настройка.
+  %prefix%&6/bdw integrations &7- Показва възможностите на интеграциите и клиента.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Презарежда настройките и съобщенията.
+  %prefix%&6/bdw update &7- Проверява зададения източник на издания.
+ServicesStatus: '%prefix%&7Услуги: &f{state}'
+UpdateRequest: '%prefix%&7Проверка за обновления: &f{state}'
+UpdateAvailable: '%prefix%&aНалична е версия {version}: &f{url}'
+UpdateCurrent: '%prefix%&aНе е намерено по-ново издание.'
+UpdateFailed: '%prefix%&cПроверката за обновления е неуспешна; вижте журнала на сървъра.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'включено'
+StateOff: 'изключено'

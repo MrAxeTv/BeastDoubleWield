@@ -29,17 +29,21 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.UUID;
 import java.util.logging.Level;
 
 /**
- * Server-thread mining sessions. Right-click packets refresh a short lease;
- * releasing the button, looking away or changing equipment ends the session.
+ * Server-thread mining sessions. Right-click packets refresh a bounded progress
+ * window and a longer inactivity lease; there is no generic right-button-up event.
  * The server supplies both mining speed and the final native block break.
  */
 public final class OffhandMining implements Listener, AutoCloseable {
     private final BeastDoubleWieldPlugin plugin;
     private final Map<UUID, Session> sessions = new HashMap<>();
+    private final Map<UUID, Integer> restartAfter = new HashMap<>();
+    private final Set<UUID> completing = new HashSet<>();
     private long generation;
 
     public OffhandMining(BeastDoubleWieldPlugin plugin) {
@@ -53,6 +57,13 @@ public final class OffhandMining implements Listener, AutoCloseable {
             return false;
         }
         UUID id = player.getUniqueId();
+        if (completing.contains(id)) return true;
+        Integer ready = restartAfter.get(id);
+        if (ready != null) {
+            // Subtraction also preserves this short interval across int tick wrap.
+            if (ready - player.getTicksLived() > 0) return true;
+            restartAfter.remove(id);
+        }
         Session previous = sessions.get(id);
         if (previous != null && sameBlock(previous.block, block) && unchanged(previous)) {
             previous.silentTicks = 0;
@@ -96,29 +107,37 @@ public final class OffhandMining implements Listener, AutoCloseable {
     public void close() {
         generation++;
         for (Session session : new ArrayList<>(sessions.values())) finish(session, true);
+        restartAfter.clear();
     }
 
     private void tick(Session session) {
         if (sessions.get(session.player.getUniqueId()) != session) return;
         try {
-            int lease = Math.max(1, Math.min(40, plugin.getConfig().getInt("mine.input-timeout-ticks", 8)));
+            int lease = Math.max(1, Math.min(40, plugin.getConfig().getInt("Mine.InputTimeoutTicks", 8)));
             if (++session.silentTicks > lease || !unchanged(session)
                     || !eligible(session.player, session.block)) {
                 finish(session, true);
                 return;
             }
+            int progressWindow = Math.min(lease, Math.max(1, Math.min(40,
+                    plugin.getConfig().getInt("Mine.InputProgressTicks", 4))));
+            // Hold partial progress for late input, but never mine or catch up
+            // through the entire inactivity grace period after a possible release.
+            if (session.silentTicks > progressWindow) return;
             float increment = session.instant || session.player.getGameMode() == GameMode.CREATIVE ? 1.0F
-                    : HandAccess.withOffhand(session.player, () -> ServerAccess.breakSpeed(session.player, session.block));
+                    : MiningAttributes.withOffhand(session.player, () -> HandAccess.withOffhand(session.player,
+                            () -> ServerAccess.breakSpeed(session.player, session.block)));
             // Zero/negative speed includes unbreakable blocks. Positive infinity is
             // legitimate for zero-hardness blocks, and means an immediate break.
             if (Float.isNaN(increment) || increment <= 0.0F) {
                 finish(session, true);
                 return;
             }
+            session.progressSteps++;
             session.progress += increment;
             if (++session.animationTicks % 4 == 1) {
                 ServerAccess.swing(session.player);
-                if (plugin.getConfig().getBoolean("mine.sounds", true)) {
+                if (plugin.getConfig().getBoolean("Mine.Sounds", true)) {
                     ServerAccess.hitSound(session.player, session.block);
                 }
             }
@@ -142,24 +161,54 @@ public final class OffhandMining implements Listener, AutoCloseable {
         plugin.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled() || session.generation != generation || sessions.containsKey(session.playerId)
                 || !unchanged(session) || !eligible(session.player, session.block)) return;
-        if (HandAccess.withOffhand(session.player, () -> ServerAccess.breakBlock(session.player, session.block))) plugin.recordBlockBreak();
+        // Native listeners can re-enter the service. Keep a completion barrier
+        // until the break result establishes whether a restart pause is needed.
+        if (!completing.add(session.playerId)) return;
+        try {
+            Runnable breakSound = null;
+            try {
+                breakSound = ServerAccess.prepareBreakSound(session.player, session.block);
+            } catch (RuntimeException failure) {
+                plugin.getLogger().log(Level.FINE, "Could not prepare an offhand block break sound", failure);
+            }
+            if (HandAccess.withOffhand(session.player, () -> ServerAccess.breakBlock(session.player, session.block))) {
+                if (session.generation == generation && session.player.isOnline() && !session.player.isDead()
+                        && (session.progressSteps > 1 || session.player.getGameMode() == GameMode.CREATIVE)) {
+                    // Native held left-click skips five continuation ticks after
+                    // a progressive break. True instant Survival breaks omit it.
+                    restartAfter.put(session.playerId, session.player.getTicksLived() + 6);
+                }
+                plugin.recordBlockBreak();
+                // Native destruction notifies nearby players but excludes the
+                // actor, whose ordinary left-click client predicts this sound.
+                // Right-click mining needs that missing actor-only feedback.
+                if (breakSound != null && session.player.isOnline()
+                        && session.player.getWorld().equals(session.block.getWorld())) {
+                    try {
+                        breakSound.run();
+                    } catch (RuntimeException failure) {
+                        plugin.getLogger().log(Level.FINE, "Could not play an offhand block break sound", failure);
+                    }
+                }
+            }
+        } finally { completing.remove(session.playerId); }
         // breakBlock dispatches BlockBreakEvent and BlockDropItemEvent and applies
         // vanilla loot, experience, tool damage and protection checks. No manual
         // block removal or duplicate drops happen here, including on cancellation.
     }
 
     private boolean eligible(Player player, Block block) {
-        ConfigurationSection rules = plugin.getConfig().getConfigurationSection("mine");
-        if (rules == null || !rules.getBoolean("enabled", true) || !plugin.isEnabled(player)
+        ConfigurationSection rules = plugin.getConfig().getConfigurationSection("Mine");
+        if (rules == null || !rules.getBoolean("Enabled", true) || !plugin.isEnabled(player)
                 || !player.isOnline() || player.isDead() || !player.hasPermission("beastdoublewield.mine")
                 || !player.getWorld().equals(block.getWorld())
-                || plugin.getConfig().getStringList("disabled-worlds").contains(player.getWorld().getName())
+                || plugin.getConfig().getStringList("DisabledWorlds").contains(player.getWorld().getName())
                 || !block.getWorld().isChunkLoaded(block.getX() >> 4, block.getZ() >> 4)
                 || block.isEmpty() || block.isLiquid()) return false;
         ItemStack tool = player.getInventory().getItemInOffHand();
         if (!ItemRules.canUse(player, tool, rules)
-                || (rules.getBoolean("correct-tool-only", false) && !ServerAccess.preferredTool(block, PlaceholderItem.logicalItem(tool)))) return false;
-        double reach = Math.max(1.0, Math.min(6.0, rules.getDouble("reach", 4.5)));
+                || (rules.getBoolean("CorrectToolOnly", false) && !ServerAccess.preferredTool(block, PlaceholderItem.logicalItem(tool)))) return false;
+        double reach = Math.max(1.0, Math.min(6.0, rules.getDouble("Reach", 4.5)));
         if (!Double.isFinite(reach)) return false;
         Block hit = ServerAccess.targetBlock(player, reach);
         return hit != null && sameBlock(block, hit);
@@ -198,10 +247,18 @@ public final class OffhandMining implements Listener, AutoCloseable {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onQuit(PlayerQuitEvent event) { stop(event.getPlayer().getUniqueId()); }
+    public void onQuit(PlayerQuitEvent event) {
+        UUID id = event.getPlayer().getUniqueId();
+        stop(id);
+        restartAfter.remove(id);
+    }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onDeath(PlayerDeathEvent event) { stop(event.getEntity().getUniqueId()); }
+    public void onDeath(PlayerDeathEvent event) {
+        UUID id = event.getEntity().getUniqueId();
+        stop(id);
+        restartAfter.remove(id);
+    }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent event) { stop(event.getPlayer().getUniqueId()); }
@@ -236,6 +293,7 @@ public final class OffhandMining implements Listener, AutoCloseable {
         private int silentTicks;
         private int animationTicks;
         private float progress;
+        private int progressSteps;
         private boolean instant;
 
         private Session(Player player, Block block, long generation) {

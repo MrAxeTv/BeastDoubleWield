@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cNíl cead agat é sin a dhéanamh.'
+PlayerOnly: '%prefix%&cTá an t-ordú seo ar fáil d''imreoirí.'
+PreferenceFailed: '%prefix%&cNíorbh fhéidir do rogha a shábháil. Seiceáil loga an fhreastalaí.'
+Enabled: '%prefix%&aTá na gníomhartha le do lámh thánaisteach cumasaithe.'
+Disabled: '%prefix%&eTá na gníomhartha le do lámh thánaisteach díchumasaithe.'
+Reloaded: '%prefix%&aAthluchtaíodh an chumraíocht agus na teachtaireachtaí.'
+ReloadFailed: '%prefix%&cTheip ar an athluchtú. Tá na socruithe a bhí agat roimhe seo fós i bhfeidhm; seiceáil loga an fhreastalaí.'
+Status: '%prefix%&7Leagan &f{version}&7. Socrú an fhreastalaí: &f{global}&7.'
+PersonalStatus: '%prefix%&7Do shocrú don lámh thánaisteach: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Féach ar shocruithe an bhreiseáin agus ar do shocruithe pearsanta.
+  %prefix%&6/bdw toggle [on|off] &7- Athraigh do shocrú pearsanta.
+  %prefix%&6/bdw integrations &7- Féach ar chumais na gcomhtháthuithe agus an chliaint.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Athluchtaigh an chumraíocht agus na teachtaireachtaí.
+  %prefix%&6/bdw update &7- Seiceáil an fhoinse eisiúintí atá cumraithe.
+ServicesStatus: '%prefix%&7Seirbhísí: &f{state}'
+UpdateRequest: '%prefix%&7Seiceáil nuashonruithe: &f{state}'
+UpdateAvailable: '%prefix%&aTá leagan {version} ar fáil: &f{url}'
+UpdateCurrent: '%prefix%&aNíor aimsíodh eisiúint níos nuaí.'
+UpdateFailed: '%prefix%&cTheip ar sheiceáil na nuashonruithe; féach ar loga an fhreastalaí.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'ar siúl'
+StateOff: 'as'

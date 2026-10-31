@@ -1,0 +1,26 @@
+# de — BeastDoubleWield messages
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cDu hast dafür keine Berechtigung.'
+PlayerOnly: '%prefix%&cDieser Befehl kann nur von Spielern verwendet werden.'
+PreferenceFailed: '%prefix%&cDeine Einstellung konnte nicht gespeichert werden. Prüfe das Serverprotokoll.'
+Enabled: '%prefix%&aDeine Nebenhandaktionen sind aktiviert.'
+Disabled: '%prefix%&eDeine Nebenhandaktionen sind deaktiviert.'
+Reloaded: '%prefix%&aKonfiguration und Nachrichten wurden neu geladen.'
+ReloadFailed: '%prefix%&cNeuladen fehlgeschlagen. Deine bisherigen Einstellungen bleiben aktiv; prüfe das Serverprotokoll.'
+Status: '%prefix%&7Version &f{version}&7. Servereinstellung: &f{global}&7.'
+PersonalStatus: '%prefix%&7Deine Nebenhandeinstellung: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Plugin-Einstellungen und persönliche Einstellungen anzeigen.
+  %prefix%&6/bdw toggle [on|off] &7- Deine persönliche Einstellung ändern.
+  %prefix%&6/bdw integrations &7- Verfügbare Integrations- und Clientfunktionen anzeigen.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Konfiguration und Nachrichten neu laden.
+  %prefix%&6/bdw update &7- Die konfigurierte Quelle auf Updates prüfen.
+ServicesStatus: '%prefix%&7Dienste: &f{state}'
+UpdateRequest: '%prefix%&7Update-Prüfung: &f{state}'
+UpdateAvailable: '%prefix%&aVersion {version} ist verfügbar: &f{url}'
+UpdateCurrent: '%prefix%&aEs wurde keine neuere Version gefunden.'
+UpdateFailed: '%prefix%&cUpdate-Prüfung fehlgeschlagen; prüfe das Serverprotokoll.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'an'
+StateOff: 'aus'

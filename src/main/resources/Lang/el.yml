@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cΔεν έχετε άδεια να το κάνετε αυτό.'
+PlayerOnly: '%prefix%&cΑυτή η εντολή είναι διαθέσιμη στους παίκτες.'
+PreferenceFailed: '%prefix%&cΔεν ήταν δυνατή η αποθήκευση της προτίμησής σας. Ελέγξτε το αρχείο καταγραφής του διακομιστή.'
+Enabled: '%prefix%&aΟι ενέργειες του δευτερεύοντος χεριού σας είναι ενεργοποιημένες.'
+Disabled: '%prefix%&eΟι ενέργειες του δευτερεύοντος χεριού σας είναι απενεργοποιημένες.'
+Reloaded: '%prefix%&aΟι ρυθμίσεις και τα μηνύματα φορτώθηκαν ξανά.'
+ReloadFailed: '%prefix%&cΗ επαναφόρτωση απέτυχε. Οι προηγούμενες ρυθμίσεις σας παραμένουν ενεργές· ελέγξτε το αρχείο καταγραφής του διακομιστή.'
+Status: '%prefix%&7Έκδοση &f{version}&7. Ρύθμιση διακομιστή: &f{global}&7.'
+PersonalStatus: '%prefix%&7Η ρύθμιση του δευτερεύοντος χεριού σας: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Προβολή των ρυθμίσεων του πρόσθετου και των προσωπικών ρυθμίσεων.
+  %prefix%&6/bdw toggle [on|off] &7- Αλλαγή της προσωπικής σας ρύθμισης.
+  %prefix%&6/bdw integrations &7- Προβολή των δυνατοτήτων ενσωμάτωσης και του προγράμματος πελάτη.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Επαναφόρτωση των ρυθμίσεων και των μηνυμάτων.
+  %prefix%&6/bdw update &7- Έλεγχος της ρυθμισμένης πηγής εκδόσεων.
+ServicesStatus: '%prefix%&7Υπηρεσίες: &f{state}'
+UpdateRequest: '%prefix%&7Έλεγχος ενημερώσεων: &f{state}'
+UpdateAvailable: '%prefix%&aΗ έκδοση {version} είναι διαθέσιμη: &f{url}'
+UpdateCurrent: '%prefix%&aΔεν βρέθηκε νεότερη έκδοση.'
+UpdateFailed: '%prefix%&cΟ έλεγχος ενημερώσεων απέτυχε· δείτε το αρχείο καταγραφής του διακομιστή.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'ενεργό'
+StateOff: 'ανενεργό'

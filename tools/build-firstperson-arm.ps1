@@ -1,5 +1,9 @@
-param([string]$OutputDirectory = (Join-Path (Split-Path -Parent $PSScriptRoot) 'target/firstperson-arm'))
-# Standalone build: never installs a pack, edits client settings or starts a server.
+param(
+    [string]$OutputDirectory = (Join-Path (Split-Path -Parent $PSScriptRoot) 'target/firstperson-arm'),
+    [string]$ClientResourcePackDirectory = 'C:/Users/krist/AppData/Roaming/.minecraft/resourcepacks',
+    [switch]$SkipClientExport
+)
+# Owner-authorized ZIP export only; never edits client settings or starts/reloads a server.
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
@@ -130,4 +134,16 @@ Write-IfChanged (Join-Path $destination ($filename + '.sha256')) ($utf8.GetBytes
 Write-IfChanged (Join-Path $destination ($filename + '.sha1')) ($utf8.GetBytes($sha1 + "`n"))
 $receipt = [ordered]@{profile='26.3';experimental=$true;file=$filename;bytes=$bytes.Length;sha256=$sha256;sha1=$sha1;entries=$contents.Count}
 Write-IfChanged (Join-Path $destination 'checksums.json') ($utf8.GetBytes(($receipt | ConvertTo-Json -Compress) + "`n"))
+if (-not $SkipClientExport) {
+    if ([string]::IsNullOrWhiteSpace($ClientResourcePackDirectory)) { throw 'ClientResourcePackDirectory cannot be empty; use -SkipClientExport for an isolated build.' }
+    $clientDirectory = [IO.Path]::GetFullPath($ClientResourcePackDirectory)
+    if (-not [IO.Directory]::Exists($clientDirectory)) {
+        throw "Client resource-pack folder does not exist: $clientDirectory. Choose -ClientResourcePackDirectory or use -SkipClientExport."
+    }
+    $clientPath = Join-Path $clientDirectory $filename
+    Write-IfChanged $clientPath $bytes
+    $clientHash = (Get-FileHash -LiteralPath $clientPath -Algorithm SHA256).Hash.ToLowerInvariant()
+    if ($clientHash -ne $sha256) { throw "Client pack export hash mismatch: $clientPath" }
+    $receipt['clientExport'] = [ordered]@{path=$clientPath;sha256=$clientHash;verified=$true}
+}
 Write-Output ($receipt | ConvertTo-Json -Compress)

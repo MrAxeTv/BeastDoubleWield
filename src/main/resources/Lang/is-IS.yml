@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cÞú hefur ekki heimild til þess.'
+PlayerOnly: '%prefix%&cÞessi skipun er í boði fyrir leikmenn.'
+PreferenceFailed: '%prefix%&cEkki tókst að vista valið þitt. Athugaðu annál þjónsins.'
+Enabled: '%prefix%&aAðgerðir aukahandarinnar þinnar eru virkar.'
+Disabled: '%prefix%&eAðgerðir aukahandarinnar þinnar eru óvirkar.'
+Reloaded: '%prefix%&aStillingar og skilaboð hafa verið endurhlaðin.'
+ReloadFailed: '%prefix%&cEndurhleðsla mistókst. Fyrri stillingar þínar gilda áfram; athugaðu annál þjónsins.'
+Status: '%prefix%&7Útgáfa &f{version}&7. Stilling þjóns: &f{global}&7.'
+PersonalStatus: '%prefix%&7Stilling aukahandarinnar þinnar: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Skoða stillingar viðbótarinnar og þínar eigin stillingar.
+  %prefix%&6/bdw toggle [on|off] &7- Breyta persónulegu stillingunni þinni.
+  %prefix%&6/bdw integrations &7- Skoða getu samþættinga og biðlara.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Endurhlaða stillingum og skilaboðum.
+  %prefix%&6/bdw update &7- Athuga uppsetta útgáfuveitu.
+ServicesStatus: '%prefix%&7Þjónustur: &f{state}'
+UpdateRequest: '%prefix%&7Athugun á uppfærslum: &f{state}'
+UpdateAvailable: '%prefix%&aÚtgáfa {version} er tiltæk: &f{url}'
+UpdateCurrent: '%prefix%&aEngin nýrri útgáfa fannst.'
+UpdateFailed: '%prefix%&cEkki tókst að leita að uppfærslum; skoðaðu annál þjónsins.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'virkt'
+StateOff: 'óvirkt'

@@ -47,7 +47,7 @@ public final class OffhandCombat {
                 || !main.equals(player.getInventory().getItemInMainHand())) return true;
         WeaponAttributes.withOffhand(player, main, acting, () -> {
             AttributeInstance speed = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
-            double rate = plugin.getConfig().getBoolean("attack.cooldown", true) && speed != null ? speed.getValue() : 20;
+            double rate = plugin.getConfig().getBoolean("Attack.Cooldown", true) && speed != null ? speed.getValue() : 20;
             limiter.record(player.getUniqueId(), player.getTicksLived(), rate);
             HandAccess.withOffhand(player, () -> { ServerAccess.attack(player, target); return null; });
             plugin.recordAttack();
@@ -58,22 +58,22 @@ public final class OffhandCombat {
     }
 
     private boolean eligible(Player player, Entity target) {
-        ConfigurationSection rules = plugin.getConfig().getConfigurationSection("attack");
+        ConfigurationSection rules = plugin.getConfig().getConfigurationSection("Attack");
         if (!player.isOnline() || player.isDead() || !plugin.isEnabled(player)
                 || !player.hasPermission("beastdoublewield.attack")
-                || plugin.getConfig().getStringList("disabled-worlds").contains(player.getWorld().getName())
+                || plugin.getConfig().getStringList("DisabledWorlds").contains(player.getWorld().getName())
                 || !ItemRules.canUse(player, player.getInventory().getItemInOffHand(), rules)) return false;
-        if (rules.getBoolean("correct-tool-only") && !ItemRules.isWeapon(player.getInventory().getItemInOffHand())) return false;
+        if (rules.getBoolean("CorrectToolOnly") && !ItemRules.isWeapon(player.getInventory().getItemInOffHand())) return false;
         if (target == null || target.equals(player) || !target.isValid() || target.isDead()
                 || !(target instanceof Damageable || target instanceof Vehicle || target instanceof Hanging || target instanceof EnderCrystal)
                 || !player.getWorld().equals(target.getWorld())) return false;
-        if (rules.getBoolean("protect-npcs", true) && target.hasMetadata("NPC")) return false;
+        if (rules.getBoolean("ProtectNpcs", true) && target.hasMetadata("NPC")) return false;
         if (target instanceof Player && !player.getWorld().getPVP()) return false;
-        if (plugin.getConfig().getBoolean("interaction.preserve-entity-use", true) && !player.isSneaking()
+        if (plugin.getConfig().getBoolean("Interaction.PreserveEntityUse", true) && !player.isSneaking()
                 && (target instanceof Vehicle || target instanceof Tameable || target instanceof Hanging || target instanceof Pig || target instanceof ArmorStand
                 || (target.getType() != null && java.util.Arrays.asList("HORSE", "DONKEY", "MULE", "SKELETON_HORSE", "ZOMBIE_HORSE", "LLAMA", "TRADER_LLAMA",
                     "VILLAGER", "WANDERING_TRADER", "STRIDER", "ALLAY", "CAMEL").contains(target.getType().name())))) return false;
-        double reach = rules.getDouble("reach", 3.0);
+        double reach = rules.getDouble("Reach", 3.0);
         return ServerAccess.distanceSquared(player, target) <= reach * reach
                 && player.hasLineOfSight(target);
     }

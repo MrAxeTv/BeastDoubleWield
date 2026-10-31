@@ -1,0 +1,26 @@
+# nl — BeastDoubleWield messages
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cJe hebt daar geen toestemming voor.'
+PlayerOnly: '%prefix%&cDit commando kan alleen door spelers worden gebruikt.'
+PreferenceFailed: '%prefix%&cJe instelling kon niet worden opgeslagen. Bekijk het serverlogboek.'
+Enabled: '%prefix%&aJe acties met de tweede hand zijn ingeschakeld.'
+Disabled: '%prefix%&eJe acties met de tweede hand zijn uitgeschakeld.'
+Reloaded: '%prefix%&aConfiguratie en berichten zijn opnieuw geladen.'
+ReloadFailed: '%prefix%&cOpnieuw laden mislukt. Je vorige instellingen blijven actief; bekijk het serverlogboek.'
+Status: '%prefix%&7Versie &f{version}&7. Serverinstelling: &f{global}&7.'
+PersonalStatus: '%prefix%&7Je instelling voor de tweede hand: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Bekijk de plugininstellingen en je persoonlijke instellingen.
+  %prefix%&6/bdw toggle [on|off] &7- Wijzig je persoonlijke instelling.
+  %prefix%&6/bdw integrations &7- Bekijk de mogelijkheden van integraties en clients.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Laad de configuratie en berichten opnieuw.
+  %prefix%&6/bdw update &7- Controleer de ingestelde bron op updates.
+ServicesStatus: '%prefix%&7Diensten: &f{state}'
+UpdateRequest: '%prefix%&7Updatecontrole: &f{state}'
+UpdateAvailable: '%prefix%&aVersie {version} is beschikbaar: &f{url}'
+UpdateCurrent: '%prefix%&aEr is geen nieuwere versie gevonden.'
+UpdateFailed: '%prefix%&cUpdatecontrole mislukt; bekijk het serverlogboek.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'aan'
+StateOff: 'uit'

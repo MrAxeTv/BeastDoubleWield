@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cNo tienes permiso para hacer eso.'
+PlayerOnly: '%prefix%&cEste comando está disponible para los jugadores.'
+PreferenceFailed: '%prefix%&cNo se pudo guardar tu preferencia. Consulta el registro del servidor.'
+Enabled: '%prefix%&aLas acciones de tu mano secundaria están activadas.'
+Disabled: '%prefix%&eLas acciones de tu mano secundaria están desactivadas.'
+Reloaded: '%prefix%&aSe han recargado la configuración y los mensajes.'
+ReloadFailed: '%prefix%&cLa recarga ha fallado. La configuración anterior sigue activa; consulta el registro del servidor.'
+Status: '%prefix%&7Versión &f{version}&7. Ajuste del servidor: &f{global}&7.'
+PersonalStatus: '%prefix%&7Tu ajuste de la mano secundaria: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Muestra la configuración del complemento y la personal.
+  %prefix%&6/bdw toggle [on|off] &7- Cambia tu ajuste personal.
+  %prefix%&6/bdw integrations &7- Muestra las capacidades de las integraciones y del cliente.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Recarga la configuración y los mensajes.
+  %prefix%&6/bdw update &7- Comprueba la fuente de versiones configurada.
+ServicesStatus: '%prefix%&7Servicios: &f{state}'
+UpdateRequest: '%prefix%&7Comprobación de actualizaciones: &f{state}'
+UpdateAvailable: '%prefix%&aLa versión {version} está disponible: &f{url}'
+UpdateCurrent: '%prefix%&aNo se ha encontrado una versión más reciente.'
+UpdateFailed: '%prefix%&cLa comprobación de actualizaciones ha fallado; consulta el registro del servidor.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'activado'
+StateOff: 'desactivado'

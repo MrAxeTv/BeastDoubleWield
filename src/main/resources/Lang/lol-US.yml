@@ -1,0 +1,26 @@
+# lol-US — BeastDoubleWield messages
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cU haz no permishun fer dat.'
+PlayerOnly: '%prefix%&cOnly player kittehs can use dis command.'
+PreferenceFailed: '%prefix%&cCould not save ur setting. Check teh server log.'
+Enabled: '%prefix%&aUr offhand actionz iz ON!'
+Disabled: '%prefix%&eUr offhand actionz iz OFF.'
+Reloaded: '%prefix%&aConfig an messagez reloaded. All done, hooman!'
+ReloadFailed: '%prefix%&cReload went bonk. Ur old settingz still work; check teh server log.'
+Status: '%prefix%&7Vershun &f{version}&7. Server setting: &f{global}&7.'
+PersonalStatus: '%prefix%&7Ur offhand setting: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Peek at plugin an ur own settingz.
+  %prefix%&6/bdw toggle [on|off] &7- Change ur own setting.
+  %prefix%&6/bdw integrations &7- See integration an client trickz.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Reload config an messagez.
+  %prefix%&6/bdw update &7- Check teh configured update feed.
+ServicesStatus: '%prefix%&7Servicez: &f{state}'
+UpdateRequest: '%prefix%&7Update check: &f{state}'
+UpdateAvailable: '%prefix%&aVershun {version} iz here: &f{url}'
+UpdateCurrent: '%prefix%&aNo newer vershun found. U haz latest!'
+UpdateFailed: '%prefix%&cUpdate check went bonk; see teh server log.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'ONZ'
+StateOff: 'OFFZ'

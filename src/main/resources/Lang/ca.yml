@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cNo tens permís per fer això.'
+PlayerOnly: '%prefix%&cAquesta ordre està disponible per als jugadors.'
+PreferenceFailed: '%prefix%&cNo s''ha pogut desar la teva preferència. Consulta el registre del servidor.'
+Enabled: '%prefix%&aLes accions de la teva mà secundària estan activades.'
+Disabled: '%prefix%&eLes accions de la teva mà secundària estan desactivades.'
+Reloaded: '%prefix%&aS''han tornat a carregar la configuració i els missatges.'
+ReloadFailed: '%prefix%&cNo s''ha pogut tornar a carregar. La configuració anterior continua activa; consulta el registre del servidor.'
+Status: '%prefix%&7Versió &f{version}&7. Configuració del servidor: &f{global}&7.'
+PersonalStatus: '%prefix%&7La teva configuració de la mà secundària: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Mostra la configuració del connector i la personal.
+  %prefix%&6/bdw toggle [on|off] &7- Canvia la teva configuració personal.
+  %prefix%&6/bdw integrations &7- Mostra les capacitats de les integracions i del client.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Torna a carregar la configuració i els missatges.
+  %prefix%&6/bdw update &7- Comprova la font de versions configurada.
+ServicesStatus: '%prefix%&7Serveis: &f{state}'
+UpdateRequest: '%prefix%&7Comprovació d''actualitzacions: &f{state}'
+UpdateAvailable: '%prefix%&aLa versió {version} està disponible: &f{url}'
+UpdateCurrent: '%prefix%&aNo s''ha trobat cap versió més recent.'
+UpdateFailed: '%prefix%&cLa comprovació d''actualitzacions ha fallat; consulta el registre del servidor.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'activat'
+StateOff: 'desactivat'

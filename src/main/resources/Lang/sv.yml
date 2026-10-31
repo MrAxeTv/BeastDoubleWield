@@ -1,0 +1,26 @@
+# sv — BeastDoubleWield messages
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cDu har inte behörighet att göra det.'
+PlayerOnly: '%prefix%&cDet här kommandot kan bara användas av spelare.'
+PreferenceFailed: '%prefix%&cDin inställning kunde inte sparas. Kontrollera serverloggen.'
+Enabled: '%prefix%&aDina handlingar med den andra handen är aktiverade.'
+Disabled: '%prefix%&eDina handlingar med den andra handen är avaktiverade.'
+Reloaded: '%prefix%&aKonfiguration och meddelanden har lästs in på nytt.'
+ReloadFailed: '%prefix%&cOmladdningen misslyckades. Dina tidigare inställningar är fortfarande aktiva; kontrollera serverloggen.'
+Status: '%prefix%&7Version &f{version}&7. Serverinställning: &f{global}&7.'
+PersonalStatus: '%prefix%&7Din inställning för den andra handen: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Visa insticksprogrammets och dina egna inställningar.
+  %prefix%&6/bdw toggle [on|off] &7- Ändra din egen inställning.
+  %prefix%&6/bdw integrations &7- Visa funktioner för integrationer och klienter.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Läs in konfiguration och meddelanden på nytt.
+  %prefix%&6/bdw update &7- Sök efter uppdateringar från den valda källan.
+ServicesStatus: '%prefix%&7Tjänster: &f{state}'
+UpdateRequest: '%prefix%&7Uppdateringskontroll: &f{state}'
+UpdateAvailable: '%prefix%&aVersion {version} finns tillgänglig: &f{url}'
+UpdateCurrent: '%prefix%&aIngen nyare version hittades.'
+UpdateFailed: '%prefix%&cUppdateringskontrollen misslyckades; kontrollera serverloggen.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'på'
+StateOff: 'av'

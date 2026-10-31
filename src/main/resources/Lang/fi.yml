@@ -1,0 +1,26 @@
+# fi — BeastDoubleWield messages
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cSinulla ei ole oikeutta tehdä tätä.'
+PlayerOnly: '%prefix%&cVain pelaajat voivat käyttää tätä komentoa.'
+PreferenceFailed: '%prefix%&cAsetustasi ei voitu tallentaa. Tarkista palvelimen loki.'
+Enabled: '%prefix%&aToisen kätesi toiminnot ovat käytössä.'
+Disabled: '%prefix%&eToisen kätesi toiminnot on poistettu käytöstä.'
+Reloaded: '%prefix%&aAsetukset ja viestit ladattiin uudelleen.'
+ReloadFailed: '%prefix%&cUudelleenlataus epäonnistui. Aiemmat asetuksesi pysyvät käytössä; tarkista palvelimen loki.'
+Status: '%prefix%&7Versio &f{version}&7. Palvelimen asetus: &f{global}&7.'
+PersonalStatus: '%prefix%&7Toisen kätesi asetus: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Näytä lisäosan asetukset ja omat asetuksesi.
+  %prefix%&6/bdw toggle [on|off] &7- Muuta omaa asetustasi.
+  %prefix%&6/bdw integrations &7- Näytä integraatioiden ja peliasiakkaan ominaisuudet.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Lataa asetukset ja viestit uudelleen.
+  %prefix%&6/bdw update &7- Tarkista määritetystä lähteestä uudet versiot.
+ServicesStatus: '%prefix%&7Palvelut: &f{state}'
+UpdateRequest: '%prefix%&7Päivitystarkistus: &f{state}'
+UpdateAvailable: '%prefix%&aVersio {version} on saatavilla: &f{url}'
+UpdateCurrent: '%prefix%&aUudempaa versiota ei löytynyt.'
+UpdateFailed: '%prefix%&cPäivitystarkistus epäonnistui; tarkista palvelimen loki.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'käytössä'
+StateOff: 'pois käytöstä'

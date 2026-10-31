@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&c你没有执行此操作的权限。'
+PlayerOnly: '%prefix%&c此命令仅供玩家使用。'
+PreferenceFailed: '%prefix%&c无法保存你的个人设置。请检查服务器日志。'
+Enabled: '%prefix%&a已启用你的副手操作。'
+Disabled: '%prefix%&e已禁用你的副手操作。'
+StateOn: '开启'
+StateOff: '关闭'
+Reloaded: '%prefix%&a配置和消息已重新加载。'
+ReloadFailed: '%prefix%&c重新加载失败。之前的设置仍然有效；请检查服务器日志。'
+Status: '%prefix%&7版本 &f{version}&7。服务器设置：&f{global}&7。'
+PersonalStatus: '%prefix%&7你的副手设置：&f{state}&7。'
+Help: |-
+  %prefix%&6/bdw status &7- 查看插件设置和个人设置。
+  %prefix%&6/bdw toggle [on|off] &7- 更改你的个人设置。
+  %prefix%&6/bdw integrations &7- 查看集成功能和客户端支持情况。
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- 重新加载配置和消息。
+  %prefix%&6/bdw update &7- 检查配置的更新源。
+ServicesStatus: '%prefix%&7服务：&f{state}'
+UpdateRequest: '%prefix%&7更新检查：&f{state}'
+UpdateAvailable: '%prefix%&a版本 {version} 已可用：&f{url}'
+UpdateCurrent: '%prefix%&a未找到更新的版本。'
+UpdateFailed: '%prefix%&c更新检查失败；请查看服务器日志。'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'

@@ -16,13 +16,13 @@ class ServiceSettingsTest {
     }
     @Test void validatesBooleansAndIntervalsBeforePublication() {
         YamlConfiguration yaml = new YamlConfiguration();
-        yaml.set("metrics.enabled", "true"); assertThrows(IllegalArgumentException.class, () -> ServiceSettings.read(yaml));
-        yaml.set("metrics.enabled", true); yaml.set("metrics.interval-minutes", 0);
+        yaml.set("Metrics.Enabled", "true"); assertThrows(IllegalArgumentException.class, () -> ServiceSettings.read(yaml));
+        yaml.set("Metrics.Enabled", true); yaml.set("Metrics.IntervalMinutes", 0);
         assertThrows(IllegalArgumentException.class, () -> ServiceSettings.read(yaml));
-        yaml.set("metrics.interval-minutes", 5.5);
+        yaml.set("Metrics.IntervalMinutes", 5.5);
         assertThrows(IllegalArgumentException.class, () -> ServiceSettings.read(yaml));
-        yaml.set("metrics.interval-minutes", 5);
-        yaml.set("metrics.endpoint", "https://metrics.example.org/v1");
+        yaml.set("Metrics.IntervalMinutes", 5);
+        yaml.set("Metrics.Endpoint", "https://metrics.example.org/v1");
         assertEquals("metrics.example.org", ServiceSettings.read(yaml).endpoint.getHost());
     }
 }

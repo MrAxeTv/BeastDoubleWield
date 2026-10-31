@@ -1,5 +1,7 @@
 # Spigot 1.9.4 acceptance fixture
 
+This fixture preserves the recorded **1.0** release checks, including its old placeholder status text. Current 1.1 development removed main-hand placeholders; use the recorded release artifact when reproducing these exact checks.
+
 This test plugin performs the 17 legacy checks recorded in [legacy-compatibility.md](../../docs/legacy-compatibility.md). It is excluded from the production JAR. It changes blocks and spawns test mobs, so install it only in a disposable test world.
 
 Use an official BuildTools Spigot 1.9.4 server, Java 8, public BeastLib **1.7.0**, and the exact BeastDoubleWield release JAR being tested. Compile `RuntimeProbe.java` with Java 8 bytecode against those three JARs, then package the resulting classes with this directory's `plugin.yml` as `BeastDoubleWieldProbe.jar` in that isolated server's `plugins` directory. No optional integration plugin is needed.

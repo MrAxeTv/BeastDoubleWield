@@ -1,0 +1,26 @@
+# tr — BeastDoubleWield messages
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cBunu yapmak için iznin yok.'
+PlayerOnly: '%prefix%&cBu komutu yalnızca oyuncular kullanabilir.'
+PreferenceFailed: '%prefix%&cTercihin kaydedilemedi. Sunucu günlüğünü kontrol et.'
+Enabled: '%prefix%&aİkinci el eylemlerin etkinleştirildi.'
+Disabled: '%prefix%&eİkinci el eylemlerin devre dışı bırakıldı.'
+Reloaded: '%prefix%&aYapılandırma ve mesajlar yeniden yüklendi.'
+ReloadFailed: '%prefix%&cYeniden yükleme başarısız oldu. Önceki ayarların etkin kalıyor; sunucu günlüğünü kontrol et.'
+Status: '%prefix%&7Sürüm &f{version}&7. Sunucu ayarı: &f{global}&7.'
+PersonalStatus: '%prefix%&7İkinci el ayarın: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Eklenti ayarlarını ve kişisel ayarlarını görüntüle.
+  %prefix%&6/bdw toggle [on|off] &7- Kişisel ayarını değiştir.
+  %prefix%&6/bdw integrations &7- Entegrasyon ve istemci özelliklerini görüntüle.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Yapılandırmayı ve mesajları yeniden yükle.
+  %prefix%&6/bdw update &7- Yapılandırılmış kaynaktan yeni sürümleri denetle.
+ServicesStatus: '%prefix%&7Hizmetler: &f{state}'
+UpdateRequest: '%prefix%&7Güncelleme denetimi: &f{state}'
+UpdateAvailable: '%prefix%&a{version} sürümü kullanılabilir: &f{url}'
+UpdateCurrent: '%prefix%&aDaha yeni bir sürüm bulunamadı.'
+UpdateFailed: '%prefix%&cGüncelleme denetimi başarısız oldu; sunucu günlüğüne bak.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'açık'
+StateOff: 'kapalı'

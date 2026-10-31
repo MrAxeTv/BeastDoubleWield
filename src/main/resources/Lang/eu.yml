@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cEz duzu hori egiteko baimenik.'
+PlayerOnly: '%prefix%&cKomando hau jokalarientzat dago erabilgarri.'
+PreferenceFailed: '%prefix%&cEzin izan da zure hobespena gorde. Begiratu zerbitzariaren erregistroa.'
+Enabled: '%prefix%&aZure bigarren eskuko ekintzak gaituta daude.'
+Disabled: '%prefix%&eZure bigarren eskuko ekintzak desgaituta daude.'
+Reloaded: '%prefix%&aKonfigurazioa eta mezuak berriro kargatu dira.'
+ReloadFailed: '%prefix%&cBirkargak huts egin du. Aurreko ezarpenek indarrean jarraitzen dute; begiratu zerbitzariaren erregistroa.'
+Status: '%prefix%&7Bertsioa: &f{version}&7. Zerbitzariaren ezarpena: &f{global}&7.'
+PersonalStatus: '%prefix%&7Zure bigarren eskuko ezarpena: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Erakutsi pluginaren eta zure ezarpenak.
+  %prefix%&6/bdw toggle [on|off] &7- Aldatu zure ezarpen pertsonala.
+  %prefix%&6/bdw integrations &7- Erakutsi integrazioen eta bezeroaren gaitasunak.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Kargatu berriro konfigurazioa eta mezuak.
+  %prefix%&6/bdw update &7- Egiaztatu konfiguratutako bertsioen iturria.
+ServicesStatus: '%prefix%&7Zerbitzuak: &f{state}'
+UpdateRequest: '%prefix%&7Eguneratzeen egiaztapena: &f{state}'
+UpdateAvailable: '%prefix%&a{version} bertsioa erabilgarri dago: &f{url}'
+UpdateCurrent: '%prefix%&aEz da bertsio berriagorik aurkitu.'
+UpdateFailed: '%prefix%&cEguneratzeen egiaztapenak huts egin du; begiratu zerbitzariaren erregistroa.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'gaituta'
+StateOff: 'desgaituta'

@@ -4,6 +4,7 @@ import me.mraxetv.beastdoublewield.placeholder.PlaceholderItem;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -21,18 +22,18 @@ public final class ItemRules {
     public static boolean canUse(Player player, ItemStack item, ConfigurationSection rules) {
         if (PlaceholderItem.isArm(item)) item = new ItemStack(Material.AIR);
         else if (PlaceholderItem.isOwned(item)) return false;
-        if (rules == null || !rules.getBoolean("enabled", true)) return false;
-        if (!rules.getBoolean(player.isSneaking() ? "sneaking" : "standing", true)) return false;
-        if (!rules.getStringList("game-modes").contains(player.getGameMode().name())) return false;
+        if (rules == null || !rules.getBoolean("Enabled", true)) return false;
+        if (!rules.getBoolean(player.isSneaking() ? "Sneaking" : "Standing", true)) return false;
+        if (!rules.getStringList("GameModes").contains(player.getGameMode().name())) return false;
         boolean empty = item == null || ServerAccess.air(item.getType()) || item.getAmount() < 1;
-        if (empty && !rules.getBoolean("allow-empty-hand", false)) return false;
+        if (empty && !rules.getBoolean("AllowEmptyHand", false)) return false;
         String material = empty ? "AIR" : ServerAccess.materialName(item.getType());
         String rawMaterial = empty ? "AIR" : item.getType().name();
         List<Pattern> patterns = FILTERS.get(rules);
         if (patterns == null) { patterns = compile(rules); FILTERS.put(rules, patterns); }
         boolean match = false;
         for (Pattern pattern : patterns) if (pattern.matcher(material).matches() || pattern.matcher(rawMaterial).matches()) { match = true; break; }
-        if ("WHITELIST".equals(rules.getString("materials.mode", "BLACKLIST"))) return match;
+        if ("WHITELIST".equals(rules.getString("Materials.Mode", "BLACKLIST"))) return match;
         return !match;
     }
 
@@ -57,30 +58,73 @@ public final class ItemRules {
                 "FLINT_AND_STEEL", "FIRE_CHARGE", "FIREWORK_ROCKET", "ENDER_PEARL", "EGG", "SNOWBALL", "BONE_MEAL").contains(name);
     }
 
+    /** Preserve a vanilla axe action only on a block it can actually transform. */
+    public static boolean hasBlockUseAction(ItemStack item, Block block) {
+        if (item == null || item.getAmount() < 1 || item.getType() == null || block == null
+                || block.getType() == null || !ServerAccess.materialName(item.getType()).endsWith("_AXE")) return false;
+        return AxeTargets.BLOCKS.contains(block.getType().name());
+    }
+
+    private static final class AxeTargets {
+        private static final Set<String> BLOCKS = find();
+        private static Set<String> find() {
+            Set<String> available = new HashSet<>();
+            for (Material material : Material.values()) available.add(material.name());
+            Set<String> targets = new HashSet<>();
+            for (String name : available) if (axeTarget(name, available)) targets.add(name);
+            return Collections.unmodifiableSet(targets);
+        }
+    }
+
+    // Resolve against this server's material vocabulary: no hard references to
+    // post-1.20 blocks, and no stripping on versions without stripped variants.
+    // Paper 26.3 has no public query for effective BLOCK_TRANSFORMER rules. This
+    // recognizes vanilla axe targets; native code still owns the actual action.
+    static boolean axeTarget(String name, Set<String> available) {
+        if (name.startsWith("LEGACY_") || !available.contains(name)) return false;
+        if (available.contains("STRIPPED_" + name)) return true;
+        String bare = name.startsWith("WAXED_") ? name.substring(6) : name;
+        if (!bare.contains("COPPER") && !bare.endsWith("LIGHTNING_ROD")) return false;
+        if (!bare.equals(name)) return available.contains(bare);
+        String previous;
+        if (name.startsWith("OXIDIZED_")) previous = "WEATHERED_" + name.substring(9);
+        else if (name.startsWith("WEATHERED_")) previous = "EXPOSED_" + name.substring(10);
+        else if (name.startsWith("EXPOSED_")) {
+            previous = name.substring(8);
+            if (previous.equals("COPPER")) previous = "COPPER_BLOCK";
+        } else return false;
+        return available.contains(previous);
+    }
+
     public static void validate(FileConfiguration config) {
-        for (String path : Arrays.asList("enabled", "interaction.preserve-entity-use", "interaction.preserve-block-use",
-                "interaction.preserve-main-hand-use", "swing.air", "attack.protect-npcs", "attack.cooldown", "mine.sounds")) bool(config, path);
-        for (String action : Arrays.asList("attack", "mine")) {
+        for (String path : Arrays.asList("Enabled", "Interaction.PreserveEntityUse", "Interaction.PreserveBlockUse",
+                "Interaction.PreserveMainHandUse", "Swing.Air", "Attack.ProtectNpcs", "Attack.Cooldown", "Mine.Sounds")) bool(config, path);
+        for (String action : Arrays.asList("Attack", "Mine")) {
             ConfigurationSection section = config.getConfigurationSection(action);
             if (section == null) throw new IllegalArgumentException("Missing section: " + action);
-            for (String name : Arrays.asList("enabled", "allow-empty-hand", "standing", "sneaking", "correct-tool-only", "cancel-interaction"))
+            for (String name : Arrays.asList("Enabled", "AllowEmptyHand", "Standing", "Sneaking", "CorrectToolOnly", "CancelInteraction"))
                 bool(config, action + "." + name);
-            number(config, action + ".reach", 0.5, 6.0);
-            String mode = section.getString("materials.mode", "BLACKLIST");
+            number(config, action + ".Reach", 0.5, 6.0);
+            String mode = section.getString("Materials.Mode", "BLACKLIST");
             if (!"BLACKLIST".equals(mode) && !"WHITELIST".equals(mode))
-                throw new IllegalArgumentException(action + ".materials.mode must be BLACKLIST or WHITELIST");
-            if (!section.isList("game-modes")) throw new IllegalArgumentException(action + ".game-modes must be a list");
-            for (String value : section.getStringList("game-modes")) {
+                throw new IllegalArgumentException(action + ".Materials.Mode must be BLACKLIST or WHITELIST");
+            if (!section.isList("GameModes")) throw new IllegalArgumentException(action + ".GameModes must be a list");
+            for (String value : section.getStringList("GameModes")) {
                 try { GameMode.valueOf(value); }
                 catch (IllegalArgumentException invalid) { throw new IllegalArgumentException("Invalid game mode: " + value); }
             }
-            if (!section.isList("materials.patterns")) throw new IllegalArgumentException(action + ".materials.patterns must be a list");
+            if (!section.isList("Materials.Patterns")) throw new IllegalArgumentException(action + ".Materials.Patterns must be a list");
             FILTERS.put(section, compile(section));
         }
-        number(config, "mine.input-timeout-ticks", 2, 40);
-        if (config.getDouble("mine.input-timeout-ticks") != config.getInt("mine.input-timeout-ticks"))
-            throw new IllegalArgumentException("mine.input-timeout-ticks must be an integer");
-        if (!config.isList("disabled-worlds")) throw new IllegalArgumentException("disabled-worlds must be a list");
+        number(config, "Mine.InputTimeoutTicks", 2, 40);
+        if (config.getDouble("Mine.InputTimeoutTicks") != config.getInt("Mine.InputTimeoutTicks"))
+            throw new IllegalArgumentException("Mine.InputTimeoutTicks must be an integer");
+        if (config.contains("Mine.InputProgressTicks")) {
+            number(config, "Mine.InputProgressTicks", 2, 40);
+            if (config.getDouble("Mine.InputProgressTicks") != config.getInt("Mine.InputProgressTicks"))
+                throw new IllegalArgumentException("Mine.InputProgressTicks must be an integer");
+        }
+        if (!config.isList("DisabledWorlds")) throw new IllegalArgumentException("DisabledWorlds must be a list");
     }
 
     private static void bool(FileConfiguration config, String path) {
@@ -90,7 +134,7 @@ public final class ItemRules {
 
     private static List<Pattern> compile(ConfigurationSection section) {
         List<Pattern> result = new ArrayList<>();
-        for (String text : section.getStringList("materials.patterns")) {
+        for (String text : section.getStringList("Materials.Patterns")) {
             try { result.add(Pattern.compile(text)); }
             catch (PatternSyntaxException bad) { throw new IllegalArgumentException(section.getCurrentPath() + ": invalid material pattern " + text, bad); }
         }

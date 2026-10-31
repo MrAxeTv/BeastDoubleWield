@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cNeturite leidimo atlikti šį veiksmą.'
+PlayerOnly: '%prefix%&cŠią komandą gali naudoti tik žaidėjai.'
+PreferenceFailed: '%prefix%&cNepavyko išsaugoti jūsų nuostatos. Patikrinkite serverio žurnalą.'
+Enabled: '%prefix%&aJūsų pagalbinės rankos veiksmai įjungti.'
+Disabled: '%prefix%&eJūsų pagalbinės rankos veiksmai išjungti.'
+StateOn: 'įjungta'
+StateOff: 'išjungta'
+Reloaded: '%prefix%&aKonfigūracija ir pranešimai įkelti iš naujo.'
+ReloadFailed: '%prefix%&cNepavyko įkelti iš naujo. Ankstesnės nuostatos tebegalioja; patikrinkite serverio žurnalą.'
+Status: '%prefix%&7Versija &f{version}&7. Serverio nuostata: &f{global}&7.'
+PersonalStatus: '%prefix%&7Jūsų pagalbinės rankos nuostata: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Peržiūrėti įskiepio ir asmenines nuostatas.
+  %prefix%&6/bdw toggle [on|off] &7- Pakeisti asmeninę nuostatą.
+  %prefix%&6/bdw integrations &7- Peržiūrėti integracijų ir kliento galimybes.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Iš naujo įkelti konfigūraciją ir pranešimus.
+  %prefix%&6/bdw update &7- Patikrinti nustatytą naujinimų šaltinį.
+ServicesStatus: '%prefix%&7Paslaugos: &f{state}'
+UpdateRequest: '%prefix%&7Naujinimų patikra: &f{state}'
+UpdateAvailable: '%prefix%&aPasiekiama versija {version}: &f{url}'
+UpdateCurrent: '%prefix%&aNaujesnės versijos nerasta.'
+UpdateFailed: '%prefix%&cNepavyko patikrinti naujinimų; žr. serverio žurnalą.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'

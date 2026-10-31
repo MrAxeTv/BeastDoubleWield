@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cНемаш дозволу за ту радњу.'
+PlayerOnly: '%prefix%&cОву команду могу да користе само играчи.'
+PreferenceFailed: '%prefix%&cТвоје подешавање није сачувано. Провери дневник сервера.'
+Enabled: '%prefix%&aТвоје радње другом руком су укључене.'
+Disabled: '%prefix%&eТвоје радње другом руком су искључене.'
+StateOn: 'укључено'
+StateOff: 'искључено'
+Reloaded: '%prefix%&aКонфигурација и поруке су поново учитане.'
+ReloadFailed: '%prefix%&cПоновно учитавање није успело. Претходна подешавања остају активна; провери дневник сервера.'
+Status: '%prefix%&7Верзија &f{version}&7. Подешавање сервера: &f{global}&7.'
+PersonalStatus: '%prefix%&7Твоје подешавање друге руке: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Прикажи подешавања додатка и лична подешавања.
+  %prefix%&6/bdw toggle [on|off] &7- Промени лично подешавање.
+  %prefix%&6/bdw integrations &7- Прикажи интеграције и могућности клијента.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Поново учитај конфигурацију и поруке.
+  %prefix%&6/bdw update &7- Провери подешени извор ажурирања.
+ServicesStatus: '%prefix%&7Услуге: &f{state}'
+UpdateRequest: '%prefix%&7Провера ажурирања: &f{state}'
+UpdateAvailable: '%prefix%&aДоступна је верзија {version}: &f{url}'
+UpdateCurrent: '%prefix%&aНовија верзија није пронађена.'
+UpdateFailed: '%prefix%&cПровера ажурирања није успела; погледај дневник сервера.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'

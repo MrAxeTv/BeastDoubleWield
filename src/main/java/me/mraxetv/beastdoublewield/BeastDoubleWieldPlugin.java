@@ -11,6 +11,7 @@ import me.mraxetv.beastdoublewield.service.BStatsTelemetry;
 import me.mraxetv.beastdoublewield.integration.IntegrationSupport;
 import me.mraxetv.beastdoublewield.compat.ServerAccess;
 import me.mraxetv.beastdoublewield.placeholder.PlaceholderService;
+import me.mraxetv.beastdoublewield.config.ConfigurationMigration;
 import me.mraxetv.beastlib.api.BeastLibAPI;
 import me.mraxetv.beastlib.api.scheduler.SchedulerServices;
 import me.mraxetv.beastlib.lib.boostedyaml.YamlDocument;
@@ -18,11 +19,9 @@ import me.mraxetv.beastlib.utils.BUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.util.logging.Level;
 
 /** Owns configuration and the BeastLib-backed lifecycle of the plugin. */
@@ -52,9 +51,7 @@ public final class BeastDoubleWieldPlugin extends JavaPlugin implements BeastLib
         try {
             if (!SchedulerServices.isAvailable()) throw new IllegalStateException("BeastLib scheduler is unavailable");
             if (getScheduler().isFolia()) throw new IllegalStateException("Folia is not supported by this version of BeastDoubleWield");
-            saveDefaultConfig();
             preferences = new PlayerPreferences(this);
-            getYamlFiles().load(this, "config.yml", "config.yml", true);
             reloadSettings();
             utils = new BUtils<BeastDoubleWieldPlugin>(this) {
                 @Override public String getPrefix() { return language.getString("Prefix", "&8[&6BeastDoubleWield&8] &r"); }
@@ -92,18 +89,21 @@ public final class BeastDoubleWieldPlugin extends JavaPlugin implements BeastLib
 
     /** Parses and validates the whole replacement before publishing it to gameplay. */
     public void reloadSettings() throws Exception {
-        YamlConfiguration candidate = new YamlConfiguration();
-        candidate.load(new File(getDataFolder(), "config.yml"));
+        ConfigurationMigration.Prepared prepared = ConfigurationMigration.prepare(getDataFolder(), this::getResource);
+        FileConfiguration candidate = prepared.settings();
         ItemRules.validate(candidate);
         RuntimeServices.validate(candidate);
         PlaceholderService.validate(candidate);
-        YamlDocument nextLanguage = getYamlFiles().load(this, "Lang/English.yml", "Lang/English.yml", true);
+        YamlDocument nextLanguage = prepared.language();
         FileConfiguration previous = settings;
         YamlDocument previousLanguage = language;
-        settings = candidate;
-        language = nextLanguage;
-        try { if (runtimeServices != null) runtimeServices.reload(); }
-        catch (RuntimeException failure) { settings = previous; language = previousLanguage; throw failure; }
+        try (ConfigurationMigration.Commit commit = prepared.commit()) {
+            settings = candidate;
+            language = nextLanguage;
+            try { if (runtimeServices != null) runtimeServices.reload(); }
+            catch (RuntimeException | Error failure) { settings = previous; language = previousLanguage; throw failure; }
+            commit.accept();
+        }
         if (mining != null) mining.close();
         if (combat != null) combat.clear();
         if (placeholders != null) placeholders.reload();
@@ -111,11 +111,16 @@ public final class BeastDoubleWieldPlugin extends JavaPlugin implements BeastLib
 
     /** Global and personal switches; permissions/world restrictions are checked by gameplay. */
     public boolean isEnabled(Player player) {
-        return getConfig().getBoolean("enabled", true) && isPersonallyEnabled(player);
+        return getConfig().getBoolean("Enabled", true) && isPersonallyEnabled(player);
     }
 
     public boolean isPersonallyEnabled(Player player) {
         return preferences == null || preferences.enabled(player);
+    }
+
+    public String stateName(boolean enabled) {
+        String fallback = enabled ? "on" : "off";
+        return language == null ? fallback : language.getString(enabled ? "StateOn" : "StateOff", fallback);
     }
 
     public void setEnabled(Player player, boolean enabled) {

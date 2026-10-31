@@ -17,6 +17,8 @@ import net.minecraft.client.model.object.skull.SkullModel;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.resources.model.cuboid.CuboidModel;
 import net.minecraft.client.renderer.FirstPersonHandsAndItemsRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.PlayerRenderState;
 import net.minecraft.world.entity.HumanoidArm;
 import java.nio.*;
 import java.nio.file.*;
@@ -37,7 +39,7 @@ public final class VerifyFirstPerson {
     static final List<Integer> buffers=new ArrayList<>();
     static JsonObject definition;
     static final FirstPersonHandsAndItemsRenderer hands=new FirstPersonHandsAndItemsRenderer(null);
-    static Method hold,swing;
+    static Method hold,swing,nativeArm;
     static String source(String path) throws Exception {
         if(Files.exists(pack.resolve(path)))return Files.readString(pack.resolve(path));
         var entry=client.getEntry(path); if(entry==null)throw new IllegalStateException("Missing shader resource "+path);
@@ -103,6 +105,54 @@ public final class VerifyFirstPerson {
         var arm=root.getChild(left?"left_arm":"right_arm");if(sleeve)arm=arm.getChild(left?"left_sleeve":"right_sleeve");
         List<ModelPart.Cube> cubes=new ArrayList<>();arm.visit(new PoseStack(),(matrix,path,index,cube)->{if(path.isEmpty())cubes.add(cube);});
         if(cubes.size()!=1)throw new IllegalStateException("Native arm cube topology changed: "+cubes.size());return cubes.get(0);
+    }
+    static ModelPart nativeArmModel(boolean left,boolean slim){
+        var root=LayerDefinition.create(PlayerModel.createMesh(CubeDeformation.NONE,slim),64,64).bakeRoot();
+        var arm=root.getChild(left?"left_arm":"right_arm");arm.resetPose();
+        // AvatarRenderer.renderHand resets the arm and applies this resting roll.
+        arm.zRot=left?-.1f:.1f;return arm;
+    }
+    static PoseStack nativeArmPose(boolean left,float progress) throws Exception {
+        PoseStack pose=new PoseStack();
+        // The real client method completes its pose then exits renderPlayerHand
+        // for a null avatar state. No running client or copied pose formula.
+        nativeArm.invoke(hands,pose,null,0,0f,progress,left?HumanoidArm.LEFT:HumanoidArm.RIGHT,new PlayerRenderState());
+        return pose;
+    }
+    static Vector3f[] bounds(ModelPart.Cube cube){
+        var min=new Vector3f(Float.POSITIVE_INFINITY);var max=new Vector3f(Float.NEGATIVE_INFINITY);
+        for(var polygon:cube.polygons)for(var vertex:polygon.vertices()){var point=new Vector3f(vertex.worldX(),vertex.worldY(),vertex.worldZ());min.min(point);max.max(point);}
+        return new Vector3f[]{min,max};
+    }
+    static Vector3f center(ModelPart.Cube cube){var b=bounds(cube);return b[0].add(b[1]).mul(.5f);}
+    static float marker(boolean left,boolean slim){return 1f+(left?(slim?2:1):(slim?4:3))/64f;}
+    static float[] nativeRestMesh(boolean left,boolean slim,boolean marked) throws Exception {
+        List<Float> values=new ArrayList<>();var origin=center(armCube(left,slim,false));float signature=marked?marker(left,slim):1;
+        nativeArmModel(left,slim).visit(nativeArmPose(left,0),(matrix,path,index,cube)->{
+            for(var polygon:cube.polygons){var vertices=polygon.vertices();var n=matrix.normal().transform(polygon.normal(),new Vector3f()).normalize();
+                for(int i:new int[]{0,1,2,0,2,3}){var v=vertices[i];var local=new Vector3f(v.worldX(),v.worldY(),v.worldZ()).sub(origin).mul(signature).add(origin);
+                    var xyz=matrix.pose().transformPosition(local);for(float f:new float[]{xyz.x,xyz.y,xyz.z,v.u(),v.v(),n.x,n.y,n.z})values.add(f);}}
+        });float[] result=new float[values.size()];for(int i=0;i<result.length;i++)result[i]=values.get(i);return result;
+    }
+    static JsonArray vector(float... values){JsonArray array=new JsonArray();for(float value:values)array.add(value);return array;}
+    static void deriveRestTransforms() throws Exception {
+        JsonObject result=new JsonObject();
+        for(boolean slim:new boolean[]{false,true})for(boolean left:new boolean[]{false,true}){
+            var selected=choose(definition,slim?35023:35022,left?"firstperson_lefthand":"firstperson_righthand");JsonArray transforms=new JsonArray();
+            var armPose=nativeArmPose(left,0);nativeArmModel(left,slim).translateAndRotate(armPose);
+            var origin=center(armCube(left,slim,false));float signature=marker(left,slim);
+            for(int shell=0;shell<2;shell++){
+                JsonObject part=parts(selected).get(shell).deepCopy();part.remove("transformation");
+                var cube=armCube(left,slim,shell==1);var cubeCenter=center(cube);var box=bounds(cube);var size=box[1].sub(box[0]).mul(2);
+                Matrix4f desired=new Matrix4f(armPose.last().pose()).translate(origin).scale(signature).translate(new Vector3f(origin).negate()).translate(cubeCenter)
+                    .scale(size).translate(0,.25f,0);
+                Matrix4f transform=new Matrix4f(pose(part,left,0).last().pose()).invert().mul(desired);
+                var t=transform.getTranslation(new Vector3f());var r=transform.getUnnormalizedRotation(new Quaternionf()).normalize();var s=transform.getScale(new Vector3f());
+                JsonObject json=new JsonObject();json.add("left_rotation",vector(r.x,r.y,r.z,r.w));json.add("right_rotation",vector(0,0,0,1));json.add("translation",vector(t.x,t.y,t.z));json.add("scale",vector(s.x,s.y,s.z));transforms.add(json);
+            }result.add((slim?"slim":"wide")+"-"+(left?"left":"right"),transforms);
+        }
+        Files.writeString(out.getParent().resolve("rest-transforms.json"),new GsonBuilder().setPrettyPrinting().create().toJson(result)+"\n");
+        System.out.println("Derived native resting transforms: "+out.getParent().resolve("rest-transforms.json"));
     }
     static float[] mesh(PoseStack pose,boolean reference,boolean left,boolean slim,boolean sleeve){
         List<Float> values=new ArrayList<>();ModelPart.Cube arm=reference?armCube(left,slim,sleeve):null;
@@ -175,9 +225,59 @@ public final class VerifyFirstPerson {
         }
         return receipt;
     }
+    /** Native cuboid bake + item shader, compared with the client's own slot sprite. */
+    static void verifyEmptyOffhand(JsonObject receipt) throws Exception {
+        var atlas=JsonParser.parseString(Files.readString(pack.resolve("assets/minecraft/atlases/items.json"))).getAsJsonObject();
+        net.minecraft.client.renderer.texture.atlas.SpriteSources.bootstrap();
+        check(net.minecraft.client.renderer.texture.atlas.SpriteSources.FILE_CODEC.parse(JsonOps.INSTANCE,atlas).getOrThrow().size()==1,"Slot atlas must only add one source");
+        var entry=atlas.getAsJsonArray("sources").get(0).getAsJsonObject();
+        check(entry.get("type").getAsString().equals("minecraft:single")&&entry.get("resource").getAsString().equals("minecraft:gui/sprites/container/slot/shield")&&entry.get("sprite").getAsString().equals("beastdoublewield:item/empty_offhand"),"Slot sprite must reference the native texture");
+        var icon=CuboidModel.fromStream(Files.newBufferedReader(pack.resolve("assets/beastdoublewield/models/item/empty_offhand.json")));
+        check(icon.guiLight()==net.minecraft.client.resources.model.UnbakedModel.GuiLight.FRONT&&icon.parent()==null,"Slot model must use flat GUI lighting without inherited transforms");
+        var geometry=(net.minecraft.client.resources.model.cuboid.UnbakedCuboidGeometry)icon.geometry();
+        check(geometry.elements().size()==1,"Slot icon must use one plane");
+        var element=geometry.elements().get(0);var face=element.faces().get(net.minecraft.core.Direction.SOUTH);
+        check(element.faces().size()==1&&face!=null&&face.tintIndex()==-1&&element.lightEmission()==15,"Slot face must be untinted and full-bright");
+        var slots=new net.minecraft.client.resources.model.sprite.TextureSlots.Resolver().addLast(icon.textureSlots()).resolve(()->"empty offhand icon");
+        check(slots.getMaterial(face.texture()).sprite().toString().equals(entry.get("sprite").getAsString()),"Baked icon face must resolve to the added native sprite");
+        var nativePng=client.getInputStream(client.getEntry("assets/minecraft/textures/gui/sprites/container/slot/shield.png")).readAllBytes();
+        var reference=ImageIO.read(new java.io.ByteArrayInputStream(nativePng));
+        check(reference.getWidth()==16&&reference.getHeight()==16,"Unexpected native slot dimensions");
+        var contents=new net.minecraft.client.renderer.texture.SpriteContents(net.minecraft.resources.Identifier.parse("beastdoublewield:item/empty_offhand"),new net.minecraft.client.resources.metadata.animation.FrameSize(16,16),com.mojang.blaze3d.platform.NativeImage.read(nativePng));
+        var constructor=net.minecraft.client.renderer.texture.TextureAtlasSprite.class.getDeclaredConstructor(net.minecraft.resources.Identifier.class,net.minecraft.client.renderer.texture.SpriteContents.class,int.class,int.class,int.class,int.class,int.class);constructor.setAccessible(true);
+        var sprite=constructor.newInstance(net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_ITEMS,contents,16,16,0,0,0);
+        var material=new net.minecraft.client.resources.model.geometry.BakedQuad.MaterialInfo(sprite,null,null,null,null,face.tintIndex(),element.shadeDirectionOverride(),element.lightEmission());
+        var interner=new net.minecraft.client.resources.model.ModelBaker.Interner(){
+            public Vector3fc vector(Vector3fc v){return v;}
+            public net.minecraft.client.resources.model.geometry.BakedQuad.MaterialInfo materialInfo(net.minecraft.client.resources.model.geometry.BakedQuad.MaterialInfo m){return m;}
+        };
+        var quad=net.minecraft.client.resources.model.cuboid.FaceBakery.bakeQuad(interner,element.from(),element.to(),face.uvs(),face.rotation(),material,net.minecraft.core.Direction.SOUTH,net.minecraft.client.renderer.block.dispatch.BlockModelRotation.IDENTITY,element.rotation());
+        var iconPose=new PoseStack();if(icon.transforms()!=null)icon.transforms().getTransform(net.minecraft.world.item.ItemDisplayContext.GUI).apply(false,iconPose.last());iconPose.translate(-.5f,-.5f,-.5f);
+        float[] vertices=new float[6*5];int offset=0;
+        for(int index:new int[]{0,1,2,0,2,3}){var position=iconPose.last().pose().transformPosition(quad.position(index),new Vector3f());vertices[offset++]=position.x();vertices[offset++]=position.y();vertices[offset++]=position.z();vertices[offset++]=UVPair.unpackU(quad.packedUV(index));vertices[offset++]=UVPair.unpackV(quad.packedUV(index));}
+        int p=program(flags(expand(source("assets/minecraft/shaders/core/item.vsh"),new HashSet<>()),"#define ALPHA_CUTOUT 0.1\n"),flags(expand(source("assets/minecraft/shaders/core/item.fsh"),new HashSet<>()),"#define ALPHA_CUTOUT 0.1\n"));
+        glUseProgram(p);
+        float[] dynamic=new float[40];new Matrix4f().get(dynamic);new Matrix4f().get(dynamic,16);dynamic[32]=dynamic[33]=dynamic[34]=dynamic[35]=1;
+        block(p,"DynamicTransforms",0,dynamic);block(p,"Projection",1,new Matrix4f().ortho(-.5f,.5f,-.5f,.5f,-1,1).get(new float[16]));block(p,"Fog",2,new float[]{0,0,0,0,100,200,100,200});
+        // Native Lighting.ITEMS_FLAT rotates the native diffuse directions by these angles.
+        var lightMatrix=new Matrix4f().rotationY(-(float)Math.PI/8).rotateX((float)Math.PI*3/4);float[] light=new float[8];
+        for(int i=0;i<2;i++){var field=com.mojang.blaze3d.platform.Lighting.class.getDeclaredField("DIFFUSE_LIGHT_"+i);field.setAccessible(true);lightMatrix.transformDirection((Vector3fc)field.get(null),new Vector3f()).get(light,i*4);}
+        block(p,"Lighting",3,light);
+        int white=glGenTextures();glActiveTexture(GL_TEXTURE1);glBindTexture(GL_TEXTURE_2D,white);ByteBuffer whites=BufferUtils.createByteBuffer(16*16*4);while(whites.hasRemaining())whites.put((byte)255);whites.flip();glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,16,16,0,GL_RGBA,GL_UNSIGNED_BYTE,whites);glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);glActiveTexture(GL_TEXTURE2);glBindTexture(GL_TEXTURE_2D,white);
+        glUniform1i(glGetUniformLocation(p,"Sampler1"),1);glUniform1i(glGetUniformLocation(p,"Sampler2"),2);glActiveTexture(GL_TEXTURE0);glBindTexture(GL_TEXTURE_2D,texture);glUniform1i(glGetUniformLocation(p,"Sampler0"),0);
+        ByteBuffer pixels=BufferUtils.createByteBuffer(16*16*4);for(int y=0;y<16;y++)for(int x=0;x<16;x++){int c=reference.getRGB(x,y);pixels.put((byte)(c>>16)).put((byte)(c>>8)).put((byte)c).put((byte)(c>>24));}pixels.flip();glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,16,16,0,GL_RGBA,GL_UNSIGNED_BYTE,pixels);glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+        int buffer=glGenBuffers();glBindBuffer(GL_ARRAY_BUFFER,buffer);glBufferData(GL_ARRAY_BUFFER,vertices,GL_STATIC_DRAW);glEnableVertexAttribArray(0);glVertexAttribPointer(0,3,GL_FLOAT,false,20,0);glEnableVertexAttribArray(2);glVertexAttribPointer(2,2,GL_FLOAT,false,20,12);glVertexAttrib4f(1,1,1,1,1);glVertexAttribI2i(3,0,0);glVertexAttribI2i(4,240,240);glVertexAttrib3f(6,0,0,1);
+        for(int scale:new int[]{1,2,3,4}){int size=16*scale;glViewport(0,0,size,size);clear();glDisable(GL_BLEND);glDrawArrays(GL_TRIANGLES,0,6);ByteBuffer result=BufferUtils.createByteBuffer(size*size*4);glReadPixels(0,0,size,size,GL_RGBA,GL_UNSIGNED_BYTE,result);var actual=new BufferedImage(size,size,BufferedImage.TYPE_INT_ARGB);int differences=0;
+            for(int y=0;y<size;y++)for(int x=0;x<size;x++){int at=((size-y-1)*size+x)*4;int c=((result.get(at+3)&255)<<24)|((result.get(at)&255)<<16)|((result.get(at+1)&255)<<8)|(result.get(at+2)&255);actual.setRGB(x,y,c);int expected=reference.getRGB(x/scale,y/scale);if((expected>>>24)==0)expected=0;if(c!=expected)differences++;}
+            ImageIO.write(actual,"png",out.resolve("empty-offhand-gui-scale-"+scale+".png").toFile());check(differences==0,"Native slot icon differs at GUI scale "+scale+": "+differences);}
+        ImageIO.write(reference,"png",out.resolve("empty-offhand-native-reference.png").toFile());
+        glDisableVertexAttribArray(0);glDisableVertexAttribArray(2);glDeleteBuffers(buffer);for(int u:buffers)glDeleteBuffers(u);buffers.clear();glDeleteProgram(p);glDeleteTextures(white);contents.close();glViewport(0,0,W,H);
+        receipt.addProperty("nativeGuiSlotIconPixelDifferences",0);receipt.addProperty("nativeGuiSlotIconScales",4);receipt.addProperty("nativeGuiSlotSpriteSha256",sha256(nativePng));
+    }
     public static void main(String[] args) throws Exception {
-        pack=Path.of(args[0]);client=new ZipFile(args[1]);out=Path.of(args[2]).resolve(W+"x"+H);Files.createDirectories(out);Files.deleteIfExists(out.resolve("result.json"));
-        JsonObject receipt=checkedPack(Path.of(args[2]).getParent().resolve("firstperson-arm/BeastDoubleWield-firstperson-arm-26.3.zip"));
+        pack=Path.of(args[0]);client=new ZipFile(args[1]);out=Path.of(args[2]).resolve(W+"x"+H);Files.createDirectories(out);
+        boolean derive=Boolean.getBoolean("probe.deriveRestTransforms");if(!derive)Files.deleteIfExists(out.resolve("result.json"));
+        JsonObject receipt=derive?new JsonObject():checkedPack(Path.of(args[2]).getParent().resolve("firstperson-arm/BeastDoubleWield-firstperson-arm-26.3.zip"));
         net.minecraft.SharedConstants.tryDetectVersion();net.minecraft.server.Bootstrap.bootStrap();
         net.minecraft.client.renderer.item.ItemModels.bootstrap();net.minecraft.client.renderer.special.SpecialModelRenderers.bootstrap();net.minecraft.client.color.item.ItemTintSources.bootstrap();
         net.minecraft.client.renderer.item.properties.select.SelectItemModelProperties.bootstrap();net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties.bootstrap();net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperties.bootstrap();
@@ -185,6 +285,9 @@ public final class VerifyFirstPerson {
         check(net.minecraft.client.renderer.item.ClientItem.CODEC.parse(JsonOps.INSTANCE,itemJson).getOrThrow()!=null,"Native item codec failed");
         hold=FirstPersonHandsAndItemsRenderer.class.getDeclaredMethod("applyItemArmTransform",PoseStack.class,HumanoidArm.class,float.class);hold.setAccessible(true);
         swing=FirstPersonHandsAndItemsRenderer.class.getDeclaredMethod("swingArm",float.class,PoseStack.class,int.class,HumanoidArm.class);swing.setAccessible(true);
+        nativeArm=FirstPersonHandsAndItemsRenderer.class.getDeclaredMethod("renderPlayerArm",PoseStack.class,SubmitNodeCollector.class,int.class,float.class,float.class,HumanoidArm.class,PlayerRenderState.class);nativeArm.setAccessible(true);
+        definition=itemJson.getAsJsonObject().getAsJsonObject("model");
+        if(derive){deriveRestTransforms();client.close();return;}
         check(glfwInit(),"GLFW initialization failed");glfwWindowHint(GLFW_VISIBLE,GLFW_FALSE);glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,4);glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,3);glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);long window=glfwCreateWindow(W,H,"Beast first-person verification",0,0);check(window!=0,"Hidden context failed");glfwMakeContextCurrent(window);GL.createCapabilities();glBindVertexArray(glGenVertexArrays());glViewport(0,0,W,H);texture=glGenTextures();
         String v=expand(source("assets/minecraft/shaders/core/entity.vsh"),new HashSet<>()),f=expand(source("assets/minecraft/shaders/core/entity.fsh"),new HashSet<>());
         String nv=expand(new String(client.getInputStream(client.getEntry("assets/minecraft/shaders/core/entity.vsh")).readAllBytes()),new HashSet<>()),nf=expand(new String(client.getInputStream(client.getEntry("assets/minecraft/shaders/core/entity.fsh")).readAllBytes()),new HashSet<>());
@@ -193,7 +296,8 @@ public final class VerifyFirstPerson {
         String renderFlags="#define NO_OVERLAY\n#define EMISSIVE\n#define NO_CARDINAL_LIGHTING\n#define ALPHA_CUTOUT 0.1\n";
         program=program(flags(v,renderFlags),flags(f,renderFlags));nativeProgram=program(flags(nv,renderFlags),flags(nf,renderFlags));
         definition=JsonParser.parseString(Files.readString(pack.resolve("assets/minecraft/items/player_head.json"))).getAsJsonObject().getAsJsonObject("model");
-        for(int cmd:new int[]{35022,35023})for(String context:new String[]{"gui","ground","fixed","head","thirdperson_lefthand","thirdperson_righthand"})check(kind(choose(definition,cmd,context)).equals("empty"),"Carrier leaked into "+context);
+        for(int cmd:new int[]{35022,35023})for(String context:new String[]{"none","ground","fixed","head","on_shelf","thirdperson_lefthand","thirdperson_righthand"})check(kind(choose(definition,cmd,context)).equals("empty"),"Carrier leaked into "+context);
+        for(int cmd:new int[]{35022,35023})check(choose(definition,cmd,"gui").get("model").getAsString().equals("beastdoublewield:item/empty_offhand"),"GUI slot icon missing");
         for(int cmd:new int[]{0,35021,35024,999999})for(String context:new String[]{"gui","firstperson_lefthand","firstperson_righthand","thirdperson_righthand"})check(choose(definition,cmd,context).equals(definition.getAsJsonObject("fallback")),"Ordinary head selector changed: "+cmd+" "+context);
         texture(true,false);PoseStack negativePose=new PoseStack();negativePose.translate(0,.25f,-2);negativePose.rotate(new Quaternionf().rotationYXZ(.35f,.12f,0));
         negative("ordinary-head",modelMesh(SkullModel.createHumanoidHeadLayer().bakeRoot(),negativePose));
@@ -202,8 +306,19 @@ public final class VerifyFirstPerson {
         var right=choose(definition,35022,"firstperson_righthand");orthographic=true;negative("marked-head-orthographic",mesh(pose(parts(right).get(0),false,0),false,false,false,false));orthographic=false;
         occludeRightHalf=true;check(pixels(render(right,false,false,0,false))==0,"Arm ignored foreground depth");occludeRightHalf=false;
         int maxDifferences=0,totalDifferences=0,interiorDifferences=0;
+        int restMaxDifferences=0,restTotalDifferences=0,restInteriorDifferences=0;
         for(boolean slim:new boolean[]{false,true})for(boolean left:new boolean[]{false,true})for(boolean synthetic:new boolean[]{false,true}){
             texture(synthetic,slim);var selected=choose(definition,slim?35023:35022,left?"firstperson_lefthand":"firstperson_righthand");check(!kind(selected).equals("empty"),"Missing first-person branch");
+            var resting=render(selected,left,slim,0,false);clear();draw(nativeProgram,nativeRestMesh(left,slim,true));var nativeRest=capture();
+            String restName=(slim?"slim":"wide")+"-"+(left?"left":"right")+"-"+(synthetic?"uv":"skin")+"-native-rest";
+            ImageIO.write(nativeRest,"png",out.resolve(restName+"-marked.png").toFile());
+            clear();draw(nativeProgram,nativeRestMesh(left,slim,false));ImageIO.write(capture(),"png",out.resolve(restName+"-vanilla.png").toFile());
+            int restChanged=diff(resting,nativeRest),restInterior=interiorDiff(resting,nativeRest);
+            restMaxDifferences=Math.max(restMaxDifferences,restChanged);restTotalDifferences+=restChanged;restInteriorDifferences+=restInterior;
+            System.out.println(restName+" differences="+restChanged+" interior="+restInterior);
+            check(pixels(nativeRest)>0,"Native empty arm left viewport: "+restName);
+            check(restChanged<Math.max(40,pixels(nativeRest)/100),"Resting pose differs from actual native empty arm: "+restName+" ("+restChanged+")");
+            check(restInterior==0,"Native resting pose interior mismatch: "+restName+" ("+restInterior+")");
             for(float progress:new float[]{0,.25f,.5f,.75f,1}){
                 var actual=render(selected,left,slim,progress,false);var reference=render(selected,left,slim,progress,true);int changed=diff(actual,reference),visible=pixels(reference);
                 String name=(slim?"slim":"wide")+"-"+(left?"left":"right")+"-"+(synthetic?"uv":"skin")+"-"+(int)(progress*100);
@@ -215,7 +330,9 @@ public final class VerifyFirstPerson {
             }
         }
         check(checkedPack(Path.of(args[2]).getParent().resolve("firstperson-arm/BeastDoubleWield-firstperson-arm-26.3.zip")).equals(receipt),"Pack changed during probe");
+        verifyEmptyOffhand(receipt);
         receipt.addProperty("checks",checks);receipt.addProperty("width",W);receipt.addProperty("height",H);receipt.addProperty("scenarios",40);receipt.addProperty("maxPixelDifferences",maxDifferences);receipt.addProperty("totalPixelDifferences",totalDifferences);receipt.addProperty("interiorPixelDifferences",interiorDifferences);receipt.addProperty("gpu",glGetString(GL_RENDERER));receipt.addProperty("liveGame",false);
+        receipt.addProperty("nativeRestScenarios",8);receipt.addProperty("nativeRestMaxPixelDifferences",restMaxDifferences);receipt.addProperty("nativeRestTotalPixelDifferences",restTotalDifferences);receipt.addProperty("nativeRestInteriorPixelDifferences",restInteriorDifferences);
         Files.writeString(out.resolve("result.json"),new GsonBuilder().setPrettyPrinting().create().toJson(receipt)+"\n");
         System.out.println("PASS "+checks+" checks; native model/swing GPU renderer "+glGetString(GL_RENDERER));glfwDestroyWindow(window);glfwTerminate();client.close();
     }

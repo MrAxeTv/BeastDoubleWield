@@ -1,0 +1,17 @@
+{
+  "gui_light": "front",
+  "textures": {
+    "particle": "beastdoublewield:item/empty_offhand",
+    "slot": "beastdoublewield:item/empty_offhand"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 8],
+      "to": [16, 16, 8],
+      "light_emission": 15,
+      "faces": {
+        "south": {"uv": [0, 0, 16, 16], "texture": "#slot"}
+      }
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 # Isolated placeholder acceptance fixture
 
+This fixture preserves **version 1.0** acceptance evidence. Its expectations of an automatically created main-hand feather do not apply to current 1.1 development, which removed that behavior. Run it only against the recorded 1.0 artifact; current arm evidence is under `tools/arm-runtime-probe` and current Java regressions under `src/test`.
+
 This test plugin and Mineflayer client exercise the optional placeholder against a real Spigot 1.20.2 server. They are excluded from the production plugin JAR. **Use only a disposable world:** the fixture changes blocks and inventories, kills and reconnects its test player, disables BeastDoubleWield, and shuts the test server down when complete.
 
 The local run uses `target/release-runtime-placeholder`, loopback address `127.0.0.1`, port `25593`, a copied Spigot 1.20.2 binary, public BeastLib 1.7.0, and the current BeastDoubleWield artifact. Copy existing Minecraft EULA acceptance only when the owner has already accepted it. Disable bStats, PluginMetrics, custom metrics and update requests in the fixture. Never copy this probe plugin into normal server export destinations.

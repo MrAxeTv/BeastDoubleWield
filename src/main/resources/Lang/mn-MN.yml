@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cТанд энэ үйлдлийг хийх эрх байхгүй.'
+PlayerOnly: '%prefix%&cЭнэ командыг зөвхөн тоглогч ашиглах боломжтой.'
+PreferenceFailed: '%prefix%&cТаны тохиргоог хадгалж чадсангүй. Серверийн бүртгэлийг шалгана уу.'
+Enabled: '%prefix%&aТаны туслах гарын үйлдлүүд идэвхжлээ.'
+Disabled: '%prefix%&eТаны туслах гарын үйлдлүүд идэвхгүй боллоо.'
+StateOn: 'идэвхтэй'
+StateOff: 'идэвхгүй'
+Reloaded: '%prefix%&aТохиргоо болон мэдэгдлүүдийг дахин ачааллаа.'
+ReloadFailed: '%prefix%&cДахин ачаалж чадсангүй. Өмнөх тохиргоо хэвээр үйлчилнэ; серверийн бүртгэлийг шалгана уу.'
+Status: '%prefix%&7Хувилбар &f{version}&7. Серверийн тохиргоо: &f{global}&7.'
+PersonalStatus: '%prefix%&7Таны туслах гарын тохиргоо: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Нэмэлтийн болон хувийн тохиргоог харах.
+  %prefix%&6/bdw toggle [on|off] &7- Хувийн тохиргоог өөрчлөх.
+  %prefix%&6/bdw integrations &7- Холболт болон клиентэд дэмжигдэх боломжуудыг харах.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Тохиргоо болон мэдэгдлүүдийг дахин ачаалах.
+  %prefix%&6/bdw update &7- Тохируулсан шинэчлэлтийн эх сурвалжийг шалгах.
+ServicesStatus: '%prefix%&7Үйлчилгээнүүд: &f{state}'
+UpdateRequest: '%prefix%&7Шинэчлэлтийн шалгалт: &f{state}'
+UpdateAvailable: '%prefix%&a{version} хувилбар бэлэн байна: &f{url}'
+UpdateCurrent: '%prefix%&aШинэ хувилбар олдсонгүй.'
+UpdateFailed: '%prefix%&cШинэчлэлтийг шалгаж чадсангүй; серверийн бүртгэлийг харна уу.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'

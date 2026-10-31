@@ -32,7 +32,7 @@ public final class OffhandInput implements Listener {
     }
     private boolean enabled(Player player) {
         return plugin.isEnabled(player) && !HandAccess.isOffhandAction(player)
-                && !(plugin.getConfig().getBoolean("interaction.preserve-main-hand-use", true)
+                && !(plugin.getConfig().getBoolean("Interaction.PreserveMainHandUse", true)
                 && !emptyMainHand(player)
                 && ItemRules.hasUseAction(player.getInventory().getItemInMainHand()));
     }
@@ -57,20 +57,27 @@ public final class OffhandInput implements Listener {
         if (event.useItemInHand() == Event.Result.DENY) return;
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (event.useInteractedBlock() == Event.Result.DENY || event.getClickedBlock() == null) return;
-            if (plugin.getConfig().getBoolean("interaction.preserve-block-use", true)
+            if (plugin.getConfig().getBoolean("Interaction.PreserveMainHandUse", true)
+                    && ItemRules.hasBlockUseAction(player.getInventory().getItemInMainHand(), event.getClickedBlock())) {
+                // Native tool actions depend on the target; an axe should still
+                // allow offhand input against blocks it cannot transform.
+                mining.stop(player.getUniqueId());
+                return;
+            }
+            if (plugin.getConfig().getBoolean("Interaction.PreserveBlockUse", true)
                     && ServerAccess.interactable(event.getClickedBlock().getType()) && !player.isSneaking()) return;
-            if (mining.begin(player, event.getClickedBlock()) && plugin.getConfig().getBoolean("mine.cancel-interaction", true))
+            if (mining.begin(player, event.getClickedBlock()) && plugin.getConfig().getBoolean("Mine.CancelInteraction", true))
                 event.setCancelled(true);
             return;
         }
-        Entity target = ServerAccess.targetEntity(player, plugin.getConfig().getDouble("attack.reach", 3));
+        Entity target = ServerAccess.targetEntity(player, plugin.getConfig().getDouble("Attack.Reach", 3));
         if (target != null && combat.attack(player, target)) {
             mining.stop(player.getUniqueId());
-            if (plugin.getConfig().getBoolean("attack.cancel-interaction", true)) event.setCancelled(true);
-        } else if (target == null && plugin.getConfig().getBoolean("swing.air", false)
+            if (plugin.getConfig().getBoolean("Attack.CancelInteraction", true)) event.setCancelled(true);
+        } else if (target == null && plugin.getConfig().getBoolean("Swing.Air", false)
                 && player.hasPermission("beastdoublewield.attack")
-                && !plugin.getConfig().getStringList("disabled-worlds").contains(player.getWorld().getName())
-                && ItemRules.canUse(player, player.getInventory().getItemInOffHand(), plugin.getConfig().getConfigurationSection("attack"))) {
+                && !plugin.getConfig().getStringList("DisabledWorlds").contains(player.getWorld().getName())
+                && ItemRules.canUse(player, player.getInventory().getItemInOffHand(), plugin.getConfig().getConfigurationSection("Attack"))) {
             ServerAccess.swing(player);
         }
     }
@@ -88,7 +95,7 @@ public final class OffhandInput implements Listener {
         if (event.getHand() != EquipmentSlot.HAND || !enabled(event.getPlayer())) return;
         if (combat.attack(event.getPlayer(), event.getRightClicked())) {
             mining.stop(event.getPlayer().getUniqueId());
-            if (plugin.getConfig().getBoolean("attack.cancel-interaction", true)) event.setCancelled(true);
+            if (plugin.getConfig().getBoolean("Attack.CancelInteraction", true)) event.setCancelled(true);
         }
     }
     @EventHandler public void quit(PlayerQuitEvent event) {

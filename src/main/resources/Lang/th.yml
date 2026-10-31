@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cคุณไม่มีสิทธิ์ดำเนินการนี้'
+PlayerOnly: '%prefix%&cคำสั่งนี้ใช้ได้เฉพาะผู้เล่นเท่านั้น'
+PreferenceFailed: '%prefix%&cไม่สามารถบันทึกการตั้งค่าของคุณได้ โปรดตรวจสอบบันทึกของเซิร์ฟเวอร์'
+Enabled: '%prefix%&aเปิดใช้งานการกระทำด้วยมือรองของคุณแล้ว'
+Disabled: '%prefix%&eปิดใช้งานการกระทำด้วยมือรองของคุณแล้ว'
+StateOn: 'เปิด'
+StateOff: 'ปิด'
+Reloaded: '%prefix%&aโหลดการตั้งค่าและข้อความใหม่แล้ว'
+ReloadFailed: '%prefix%&cโหลดใหม่ไม่สำเร็จ การตั้งค่าเดิมยังคงใช้งานอยู่ โปรดตรวจสอบบันทึกของเซิร์ฟเวอร์'
+Status: '%prefix%&7เวอร์ชัน &f{version}&7 การตั้งค่าเซิร์ฟเวอร์: &f{global}&7'
+PersonalStatus: '%prefix%&7การตั้งค่ามือรองของคุณ: &f{state}&7'
+Help: |-
+  %prefix%&6/bdw status &7- ดูการตั้งค่าปลั๊กอินและการตั้งค่าส่วนตัว
+  %prefix%&6/bdw toggle [on|off] &7- เปลี่ยนการตั้งค่าส่วนตัวของคุณ
+  %prefix%&6/bdw integrations &7- ดูการเชื่อมต่อกับปลั๊กอินอื่นและความสามารถของไคลเอนต์
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- โหลดการตั้งค่าและข้อความใหม่
+  %prefix%&6/bdw update &7- ตรวจสอบแหล่งอัปเดตที่ตั้งค่าไว้
+ServicesStatus: '%prefix%&7บริการ: &f{state}'
+UpdateRequest: '%prefix%&7การตรวจสอบอัปเดต: &f{state}'
+UpdateAvailable: '%prefix%&aมีเวอร์ชัน {version} ให้ใช้งาน: &f{url}'
+UpdateCurrent: '%prefix%&aไม่พบเวอร์ชันที่ใหม่กว่า'
+UpdateFailed: '%prefix%&cตรวจสอบอัปเดตไม่สำเร็จ โปรดดูบันทึกของเซิร์ฟเวอร์'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'

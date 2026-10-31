@@ -3,7 +3,8 @@ param(
     [string]$PackRoot = (Join-Path $PSScriptRoot '../../examples/firstperson-arm/26.3'),
     [string]$ClientVersion = '26.3',
     [ValidateRange(320,7680)][int]$Width = 640,
-    [ValidateRange(240,4320)][int]$Height = 480
+    [ValidateRange(240,4320)][int]$Height = 480,
+    [switch]$DeriveRestTransforms
 )
 $ErrorActionPreference = 'Stop'
 $projectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
@@ -38,7 +39,8 @@ foreach ($suffix in @('', '-natives-windows')) {
 function Quote-JavaArgument([string]$value) { '"' + $value.Replace('\', '/').Replace('"', '\"') + '"' }
 $classpath = Quote-JavaArgument ($entries -join ';')
 $compileArgs = @('-cp', $classpath, '-d', (Quote-JavaArgument $outputRoot), (Quote-JavaArgument (Join-Path $PSScriptRoot 'VerifyFirstPerson.java')))
-$runArgs = @('--enable-native-access=ALL-UNNAMED', "-Dprobe.width=$Width", "-Dprobe.height=$Height", '-cp', $classpath, 'VerifyFirstPerson',
+$deriveFlag = "-Dprobe.deriveRestTransforms=$($DeriveRestTransforms.IsPresent.ToString().ToLowerInvariant())"
+$runArgs = @('--enable-native-access=ALL-UNNAMED', "-Dprobe.width=$Width", "-Dprobe.height=$Height", $deriveFlag, '-cp', $classpath, 'VerifyFirstPerson',
     (Quote-JavaArgument ([IO.Path]::GetFullPath($PackRoot))), (Quote-JavaArgument $clientJar), (Quote-JavaArgument $outputRoot))
 $compileFile = Join-Path $outputRoot 'javac.args'
 $runFile = Join-Path $outputRoot 'java.args'

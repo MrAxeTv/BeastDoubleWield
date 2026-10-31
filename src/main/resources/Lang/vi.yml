@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cBạn không có quyền thực hiện thao tác này.'
+PlayerOnly: '%prefix%&cChỉ người chơi mới có thể dùng lệnh này.'
+PreferenceFailed: '%prefix%&cKhông thể lưu tùy chọn của bạn. Hãy kiểm tra nhật ký máy chủ.'
+Enabled: '%prefix%&aĐã bật các thao tác bằng tay phụ của bạn.'
+Disabled: '%prefix%&eĐã tắt các thao tác bằng tay phụ của bạn.'
+StateOn: 'bật'
+StateOff: 'tắt'
+Reloaded: '%prefix%&aĐã tải lại cấu hình và thông báo.'
+ReloadFailed: '%prefix%&cTải lại thất bại. Các thiết lập trước đó vẫn được giữ; hãy kiểm tra nhật ký máy chủ.'
+Status: '%prefix%&7Phiên bản &f{version}&7. Thiết lập máy chủ: &f{global}&7.'
+PersonalStatus: '%prefix%&7Thiết lập tay phụ của bạn: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Xem thiết lập plugin và thiết lập cá nhân.
+  %prefix%&6/bdw toggle [on|off] &7- Thay đổi thiết lập cá nhân của bạn.
+  %prefix%&6/bdw integrations &7- Xem các tích hợp và khả năng của máy khách.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Tải lại cấu hình và thông báo.
+  %prefix%&6/bdw update &7- Kiểm tra nguồn cập nhật đã cấu hình.
+ServicesStatus: '%prefix%&7Dịch vụ: &f{state}'
+UpdateRequest: '%prefix%&7Kiểm tra cập nhật: &f{state}'
+UpdateAvailable: '%prefix%&aĐã có phiên bản {version}: &f{url}'
+UpdateCurrent: '%prefix%&aKhông tìm thấy phiên bản mới hơn.'
+UpdateFailed: '%prefix%&cKiểm tra cập nhật thất bại; hãy xem nhật ký máy chủ.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'

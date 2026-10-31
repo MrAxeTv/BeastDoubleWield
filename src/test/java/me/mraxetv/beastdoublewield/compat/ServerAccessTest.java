@@ -1,6 +1,9 @@
 package me.mraxetv.beastdoublewield.compat;
 
 import org.bukkit.Material;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -20,6 +23,20 @@ class ServerAccessTest {
         assertFalse(ServerAccess.breakBlock(player, block));
         assertEquals(0.125F, ServerAccess.breakSpeed(player, block));
         verify(player, never()).damage(anyDouble());
+    }
+    @Test void legacyBreakFeedbackCapturesMaterialAndWaitsForCompletion() {
+        Player player = mock(Player.class);
+        World world = mock(World.class);
+        Block block = mock(Block.class);
+        when(block.getType()).thenReturn(Material.STONE);
+        when(block.getLocation()).thenAnswer(call -> new Location(world, 2, 3, 4));
+        Runnable feedback = LegacyNative.prepareBreakSound(player, block);
+        verifyNoInteractions(player, world);
+        when(block.getType()).thenReturn(Material.AIR);
+        feedback.run();
+        verify(player).playEffect(new Location(world, 2.5, 3.5, 4.5), Effect.STEP_SOUND, Material.STONE);
+        verifyNoMoreInteractions(player);
+        verifyNoInteractions(world);
     }
     @Test void earlyBukkitAttackApisCannotSelectTheMobOnlyPlayerPath() {
         assertTrue(ServerAccess.requiresNativePlayerAttack("org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer"));

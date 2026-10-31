@@ -1,0 +1,25 @@
+Prefix: '&8[&6BeastDoubleWield&8] &r'
+NoPermission: '%prefix%&cSul pole selleks õigust.'
+PlayerOnly: '%prefix%&cSee käsk on saadaval mängijatele.'
+PreferenceFailed: '%prefix%&cSinu eelistust ei saanud salvestada. Kontrolli serveri logi.'
+Enabled: '%prefix%&aSinu teise käe tegevused on lubatud.'
+Disabled: '%prefix%&eSinu teise käe tegevused on keelatud.'
+Reloaded: '%prefix%&aSeadistus ja sõnumid laaditi uuesti.'
+ReloadFailed: '%prefix%&cUuesti laadimine ebaõnnestus. Varasemad seaded jäävad kehtima; kontrolli serveri logi.'
+Status: '%prefix%&7Versioon &f{version}&7. Serveri seade: &f{global}&7.'
+PersonalStatus: '%prefix%&7Sinu teise käe seade: &f{state}&7.'
+Help: |-
+  %prefix%&6/bdw status &7- Kuva lisamooduli ja isiklikud seaded.
+  %prefix%&6/bdw toggle [on|off] &7- Muuda oma isiklikku seadet.
+  %prefix%&6/bdw integrations &7- Kuva liidestuste ja kliendi võimalused.
+AdminHelp: |-
+  %prefix%&6/bdw reload &7- Laadi seadistus ja sõnumid uuesti.
+  %prefix%&6/bdw update &7- Kontrolli seadistatud väljalasete allikat.
+ServicesStatus: '%prefix%&7Teenused: &f{state}'
+UpdateRequest: '%prefix%&7Uuenduste kontroll: &f{state}'
+UpdateAvailable: '%prefix%&aVersioon {version} on saadaval: &f{url}'
+UpdateCurrent: '%prefix%&aUuemat väljalaset ei leitud.'
+UpdateFailed: '%prefix%&cUuenduste kontroll ebaõnnestus; vaata serveri logi.'
+IntegrationStatus: '%prefix%&7{name}: &f{state}'
+StateOn: 'sees'
+StateOff: 'väljas'

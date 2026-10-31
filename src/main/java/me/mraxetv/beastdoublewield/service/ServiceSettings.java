@@ -23,13 +23,13 @@ public final class ServiceSettings {
     }
 
     public static ServiceSettings read(ConfigurationSection config) {
-        boolean updates = bool(config, "updates.enabled", true);
-        boolean notify = bool(config, "updates.notify-admins", true);
-        boolean metrics = bool(config, "metrics.enabled", false);
-        URI manifest = endpoint(config.getString("updates.manifest-url", ""), "updates.manifest-url");
-        URI endpoint = endpoint(config.getString("metrics.endpoint", ""), "metrics.endpoint");
-        long updateMinutes = minutes(config, "updates.interval-minutes", 360, 5, 10080);
-        long metricMinutes = minutes(config, "metrics.interval-minutes", 30, 5, 1440);
+        boolean updates = bool(config, "Updates.Enabled", true);
+        boolean notify = bool(config, "Updates.NotifyAdmins", true);
+        boolean metrics = bool(config, "Metrics.Enabled", false);
+        URI manifest = endpoint(config.getString("Updates.ManifestUrl", ""), "Updates.ManifestUrl");
+        URI endpoint = endpoint(config.getString("Metrics.Endpoint", ""), "Metrics.Endpoint");
+        long updateMinutes = minutes(config, "Updates.IntervalMinutes", 360, 5, 10080);
+        long metricMinutes = minutes(config, "Metrics.IntervalMinutes", 30, 5, 1440);
         return new ServiceSettings(updates, notify, manifest, updateMinutes, metrics, endpoint, metricMinutes);
     }
 
